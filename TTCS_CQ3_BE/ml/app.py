@@ -5,13 +5,12 @@ import numpy
 
 app = Flask(__name__)
 
-# Dùng đường dẫn tuyệt đối để luôn load đúng model.pkl trong thư mục /ml/
 _dir  = os.path.dirname(os.path.abspath(__file__))
 model = joblib.load(os.path.join(_dir, "model.pkl"))
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.json  # nhận dữ liệu JSON từ SpringBoot
+    data = request.json
 
     features = numpy.array([[
         data["responseTime"],
@@ -25,7 +24,7 @@ def predict():
     p_correct = float(prob[1])
     p_forget  = 1 - p_correct
 
-    return jsonify({        # đóng gói lại thành JSON
+    return jsonify({
         "p_correct": p_correct,
         "p_forget":  p_forget
     })
