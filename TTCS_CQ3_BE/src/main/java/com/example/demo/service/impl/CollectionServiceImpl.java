@@ -35,7 +35,6 @@ public class CollectionServiceImpl implements CollectionService {
 
                 List<CollectionEntity> collections = collectionRepository.findByUser_UserId(userId);
 
-                // Tự động tạo "Từ vựng của tôi" nếu user chưa có (user cũ hoặc bị thiếu)
                 final String DEFAULT_NAME = "Từ vựng của tôi";
                 boolean hasDefault = collections.stream()
                                 .anyMatch(c -> DEFAULT_NAME.equals(c.getCollectionName()));

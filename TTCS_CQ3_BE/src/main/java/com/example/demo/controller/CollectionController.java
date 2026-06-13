@@ -24,7 +24,6 @@ public class CollectionController {
 
     private final CollectionService collectionService;
 
-    // 🔹 1. Lấy danh sách collection của user đang đăng nhập
     @GetMapping
     public ResponseEntity<List<CollectionResponseDTO>> getCollections(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -33,7 +32,6 @@ public class CollectionController {
         return ResponseEntity.ok(collectionService.getUserCollections(userId));
     }
 
-    // 🔹 2. Tạo collection
     @PostMapping
     public ResponseEntity<CollectionResponseDTO> createCollection(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -45,7 +43,6 @@ public class CollectionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(collection);
     }
 
-    // 🔹 3. Xóa collection
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCollection(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -56,7 +53,6 @@ public class CollectionController {
         return ResponseEntity.noContent().build(); // 204
     }
 
-    // 🔹 4. Lấy vocab trong collection
     @GetMapping("/{id}/vocabs")
     public ResponseEntity<List<CollectionVocabResponse>> getVocabs(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -68,7 +64,6 @@ public class CollectionController {
         return ResponseEntity.ok(vocabs);
     }
 
-    // 🔹 5. Thêm vocab vào collection
     @PostMapping("/{id}/vocabs/{vocabId}")
     public ResponseEntity<Void> addVocab(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -80,7 +75,6 @@ public class CollectionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // 🔹 6. Đổi tên collection
     @PutMapping("/{id}")
     public ResponseEntity<CollectionResponseDTO> updateCollection(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -92,7 +86,6 @@ public class CollectionController {
         return ResponseEntity.ok(updatedCollection);
     }
 
-    // 🔹 7. Xóa vocab khỏi collection
     @DeleteMapping("/{id}/vocabs/{vocabId}")
     public ResponseEntity<Void> removeVocab(
             @AuthenticationPrincipal CustomUserDetails userDetails,

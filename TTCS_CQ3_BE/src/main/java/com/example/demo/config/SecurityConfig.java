@@ -40,10 +40,8 @@ public class SecurityConfig {
                         "/api/topics",
                         "/api/topics/**",
                         "/api/lessons/**",
-                        // "/api/vocabularies/**",
-                        "/api/templates/**", // api tải file csv mẫu
-                        "/api/leaderboard", // leaderboard public - guest có thể xem, nếu có JWT thì FE gửi token để
-                                            // highlight user hiện tại
+                        "/api/templates/**",
+                        "/api/leaderboard",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/error",
@@ -109,9 +107,4 @@ public class SecurityConfig {
                 source.registerCorsConfiguration("/**", config);
                 return source;
         }
-        //
-        // @Bean
-        // public PasswordEncoder passwordEncoder() {
-        // return new BCryptPasswordEncoder(); //giu de hash password
-        // }
 }

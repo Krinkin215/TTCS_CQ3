@@ -10,9 +10,7 @@ public interface UserVocabProgressService {
 
     LearnedVocabStatsResponseDTO getLearnedVocabStats(Long userId);
 
-    /** Đếm số từ NEW / LEARNING / MASTERED trong một collection theo tiến độ học của user đang đăng nhập */
     VocabStatusSummaryDTO getStatusSummaryForCollection(Long userId, Long collectionId);
 
-    /** Đếm số từ NEW / LEARNING / MASTERED trong một lesson theo tiến độ học của user đang đăng nhập */
     VocabStatusSummaryDTO getStatusSummaryForLesson(Long userId, Long lessonId);
 }

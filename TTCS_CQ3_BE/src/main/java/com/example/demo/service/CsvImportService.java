@@ -39,7 +39,7 @@ public class CsvImportService {
 
     @Transactional
     public Map<String, Object> importForUser(MultipartFile file, Long collectionId, Long userId) throws Exception {
-        // Nếu có collectionId → kiểm tra quyền
+
         CollectionEntity collection = null;
         if (collectionId != null) {
             collection = collectionRepository.findById(collectionId)
@@ -91,7 +91,6 @@ public class CsvImportService {
                     continue;
                 }
 
-                // Nếu có collection → kiểm tra từ đã tồn tại trong collection chưa
                 if (collection != null) {
                     boolean existsInCollection = collectionVocabRepository
                             .existsByCollectionIdAndWordIgnoreCase(collectionId, word);
@@ -101,10 +100,9 @@ public class CsvImportService {
                     }
                 }
 
-                // Kiểm tra từ đã tồn tại trong hệ thống chưa
                 VocabularyEntity vocab = vocabularyRepository.findByWordAndCreatedBy(word, userId).orElse(null);
                 if (vocab == null) {
-                    // Từ chưa tồn tại → tạo mới
+
                     vocab = VocabularyEntity.builder()
                             .word(word)
                             .pronunciation(pronunciation)
@@ -113,16 +111,14 @@ public class CsvImportService {
                             .level(level)
                             .example(example)
                             .createdBy(userId)
-                            .lesson(null) // Từ do user tạo không thuộc bài học cụ thể nào
+                            .lesson(null)
                             .build();
                     vocabList.add(vocab);
                 } else {
-                    // Từ đã tồn tại trong từ vựng của user → bỏ qua
                     errors.add("Dòng " + lineNum + ": Từ '" + word + "' đã tồn tại trong từ vựng của bạn");
                     continue;
                 }
 
-                // Nếu có collection → thêm vào collection
                 if (collection != null) {
                     CollectionVocabEntity cv = CollectionVocabEntity.builder()
                             .collection(collection)
@@ -138,11 +134,9 @@ public class CsvImportService {
             }
         }
 
-        // Save vocab MỚI trước để có ID
         vocabularyRepository.saveAll(vocabList);
-        vocabularyRepository.flush(); // Đảm bảo ID đã được gán
+        vocabularyRepository.flush();
 
-        // Nếu có collection → lưu quan hệ collection-vocab
         if (collection != null && !collectionVocabList.isEmpty()) {
             collectionVocabRepository.saveAll(collectionVocabList);
         }
@@ -207,7 +201,6 @@ public class CsvImportService {
                     continue;
                 }
 
-                // Determine Lesson
                 LessonEntity targetLesson = defaultLesson;
                 if (!lessonName.isBlank() && defaultTopic != null) {
                     targetLesson = lessonCache.computeIfAbsent(lessonName, key -> {
@@ -227,24 +220,16 @@ public class CsvImportService {
                     continue;
                 }
 
-                // Cập nhật từ hoặc tạo mới
-                // VocabularyEntity vocab = vocabularyRepository.findByWordAndLesson(word,
-                // targetLesson)
-                // .orElse(new VocabularyEntity());
-
                 VocabularyEntity vocab = vocabularyRepository.findByWord(word).orElse(null);
 
                 if (vocab != null) {
-                    // Neu tu da xuat hien trong he thong, kiem tra xem thuoc bai hoc nao
                     boolean isSameLesson = vocab.getLesson() != null && targetLesson != null
                             && vocab.getLesson().getLessonId().equals(targetLesson.getLessonId());
 
                     if (isSameLesson) {
-                        // Tu da xuat hien trong CUNG bai hoc nay -> Bao loi trung lap, bo qua
                         errors.add("Dòng " + lineNum + ": từ '" + word + "' đã tồn tại trong bài học này");
                         continue;
                     } else {
-                        // Tu co o bai hoc khac -> Bao loi trung lap va bo qua tu nay
                         errors.add("Dòng " + lineNum + ": từ '" + word + "' đã tồn tại trong bài học khác");
                         continue;
                     }

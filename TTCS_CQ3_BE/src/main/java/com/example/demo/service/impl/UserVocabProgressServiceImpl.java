@@ -166,13 +166,6 @@ public class UserVocabProgressServiceImpl implements UserVocabProgressService {
         progressRepository.save(newProgress);
     }
 
-    /**
-     * Đếm số từ NEW / LEARNING / MASTERED trong một collection cho user.
-     * - Lấy tổng số từ trong collection.
-     * - Lấy progress mới nhất của mỗi từ đã học.
-     * - Những từ chưa có progress → NEW.
-     * - Resolve status thực tế qua VocabStatusResolver.
-     */
     @Override
     public VocabStatusSummaryDTO getStatusSummaryForCollection(Long userId, Long collectionId) {
         UserEntity user = userRepository.findById(userId)
@@ -195,9 +188,6 @@ public class UserVocabProgressServiceImpl implements UserVocabProgressService {
         return buildSummary(totalCount, rows);
     }
 
-    /**
-     * Đếm số từ NEW / LEARNING / MASTERED trong một lesson cho user.
-     */
     @Override
     public VocabStatusSummaryDTO getStatusSummaryForLesson(Long userId, Long lessonId) {
         UserEntity user = userRepository.findById(userId)
@@ -209,10 +199,6 @@ public class UserVocabProgressServiceImpl implements UserVocabProgressService {
         return buildSummary(totalCount, rows);
     }
 
-    /**
-     * Xây dựng VocabStatusSummaryDTO từ danh sách progress rows.
-     * rows: [vocabId, status (VocabStatus), pForget (Double), correctCount (Integer), incorrectCount (Integer)]
-     */
     private VocabStatusSummaryDTO buildSummary(long totalCount, List<Object[]> rows) {
         long learningCount = 0;
         long masteredCount = 0;
@@ -229,7 +215,6 @@ public class UserVocabProgressServiceImpl implements UserVocabProgressService {
             } else if (resolvedStatus == VocabStatus.LEARNING) {
                 learningCount++;
             }
-            // totalAttempts == 0 → NEW, không cần đếm riêng
         }
 
         long newCount = Math.max(0, totalCount - learningCount - masteredCount);

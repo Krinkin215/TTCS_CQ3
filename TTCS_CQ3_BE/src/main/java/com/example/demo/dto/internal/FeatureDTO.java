@@ -14,8 +14,6 @@ public class FeatureDTO {
     private double rememberRate;
     private int daysSinceLastLearn;
     private double responseTime;
-    /** Giá trị pForget đang lưu trong DB (có thể null nếu chưa có lịch sử ML). */
     private Double dbPForget;
-    /** Primary key của bản ghi UserVocabProgress mới nhất, dùng để cập nhật pForget. */
     private Long progressId;
 }

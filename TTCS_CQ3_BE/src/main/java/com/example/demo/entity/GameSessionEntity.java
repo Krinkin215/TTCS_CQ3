@@ -25,14 +25,6 @@ public class GameSessionEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "lesson_id")
-//    private LessonEntity lesson;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "collection_id")
-//    private CollectionEntity collection;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "source_type")
     private SourceType sourceType;

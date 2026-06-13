@@ -19,7 +19,6 @@ public class GameController {
 
     private final GameService gameService;
 
-    // API khoi tao game (Dung cho ca Quiz, Match va Listen)
     @PostMapping("/{gameType}/init")
     public ResponseEntity<List<QuestionResponseDTO>> initGame(@PathVariable String gameType,  // "quiz", "match", "listen"
                                                               @RequestBody GameInitRequestDTO request,
@@ -30,7 +29,6 @@ public class GameController {
         return ResponseEntity.ok(questions);
     }
 
-    // API nop bai test
     @PostMapping("/{gameType}/finish")
     public ResponseEntity<String> finishGame(@PathVariable String gameType,
                                              @RequestBody GameFinishRequestDTO request,

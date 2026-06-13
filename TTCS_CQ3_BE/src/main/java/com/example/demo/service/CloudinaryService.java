@@ -15,7 +15,6 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    // Thực hiện upload file hình ảnh (cho topic/avatar)
     public String uploadImage(MultipartFile file, String fileName) throws IOException {
         Map<String, Object> options = ObjectUtils.asMap(
                 "resource_type", "image",
@@ -30,7 +29,6 @@ public class CloudinaryService {
         return result.get("secure_url").toString();
     }
 
-    // Xóa hình ảnh
     public void deleteImage(String publicId) throws IOException {
         cloudinary.uploader().destroy(
                 "englearn-images/" + publicId,

@@ -16,7 +16,6 @@ public class ProgressController {
 
     private final UserVocabProgressService progressService;
 
-    // API test update đúng/sai
     @PostMapping("/update")
     public String updateProgress(
             @RequestParam Long userId,
@@ -32,10 +31,6 @@ public class ProgressController {
         return ResponseEntity.ok(progressService.getLearnedVocabStats(userId));
     }
 
-    /**
-     * Đếm số từ NEW / LEARNING / MASTERED trong một bộ từ vựng (collection) của user đang đăng nhập.
-     * GET /api/progress/summary/collection/{collectionId}
-     */
     @GetMapping("/summary/collection/{collectionId}")
     public ResponseEntity<VocabStatusSummaryDTO> getCollectionSummary(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -44,10 +39,6 @@ public class ProgressController {
         return ResponseEntity.ok(progressService.getStatusSummaryForCollection(userId, collectionId));
     }
 
-    /**
-     * Đếm số từ NEW / LEARNING / MASTERED trong một bài học (lesson) của user đang đăng nhập.
-     * GET /api/progress/summary/lesson/{lessonId}
-     */
     @GetMapping("/summary/lesson/{lessonId}")
     public ResponseEntity<VocabStatusSummaryDTO> getLessonSummary(
             @AuthenticationPrincipal CustomUserDetails userDetails,

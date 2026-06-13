@@ -18,7 +18,7 @@ public interface UserVocabProgressRepository extends JpaRepository<UserVocabProg
     // Tìm tiến trình cũ của 1 user cụ thể trên 1 từ vựng cụ thể
     Optional<UserVocabProgressEntity> findByUser_EmailAndVocab_VocabId(String email, Long vocabId);
 
-//     Lấy từ theo trạng thái cụ thể user, ưu tiên thẻ chưa học xếp lên trên
+    // Lấy từ theo trạng thái cụ thể user, ưu tiên thẻ chưa học xếp lên trên
     List<UserVocabProgressEntity> findByUser_EmailAndStatusInOrderByLastLearnAsc(String email,
             List<VocabStatus> status);
 
@@ -45,11 +45,6 @@ public interface UserVocabProgressRepository extends JpaRepository<UserVocabProg
 
     void deleteByUser_UserId(Long userId);
 
-    /**
-     * Lấy bản ghi progress mới nhất của mỗi từ trong collection, cho một user cụ
-     * thể.
-     * Kết quả: danh sách [vocabId, status] - chỉ những từ đã có progress.
-     */
     @Query("""
             SELECT p.vocab.vocabId, p.status, p.pForget, p.correctCount, p.incorrectCount
             FROM UserVocabProgressEntity p
@@ -67,15 +62,9 @@ public interface UserVocabProgressRepository extends JpaRepository<UserVocabProg
             @Param("user") UserEntity user,
             @Param("collectionId") Long collectionId);
 
-    /**
-     * Tổng số từ trong một collection.
-     */
     @Query("SELECT COUNT(cv) FROM CollectionVocabEntity cv WHERE cv.collection.collectionId = :collectionId")
     long countVocabsInCollection(@Param("collectionId") Long collectionId);
 
-    /**
-     * Lấy bản ghi progress mới nhất của mỗi từ trong lesson, cho một user cụ thể.
-     */
     @Query("""
             SELECT p.vocab.vocabId, p.status, p.pForget, p.correctCount, p.incorrectCount
             FROM UserVocabProgressEntity p
@@ -90,15 +79,9 @@ public interface UserVocabProgressRepository extends JpaRepository<UserVocabProg
             @Param("user") UserEntity user,
             @Param("lessonId") Long lessonId);
 
-    /**
-     * Tổng số từ trong một lesson.
-     */
     @Query("SELECT COUNT(v) FROM VocabularyEntity v WHERE v.lesson.lessonId = :lessonId")
     long countVocabsInLesson(@Param("lessonId") Long lessonId);
 
-    /**
-     * Lấy progress mới nhất cho một danh sách vocabId cụ thể (dùng cho "Từ vựng của tôi").
-     */
     @Query("""
             SELECT p.vocab.vocabId, p.status, p.pForget, p.correctCount, p.incorrectCount
             FROM UserVocabProgressEntity p
@@ -117,9 +100,5 @@ public interface UserVocabProgressRepository extends JpaRepository<UserVocabProg
 
     Optional<UserVocabProgressEntity> findFirstByUser_UserIdAndVocab_VocabIdOrderByCreatedAtDesc(Long userId, Long vocabId);
 
-    /**
-     * Xóa TẤT CẢ bản ghi progress của một user cho một từ vựng cụ thể.
-     * Dùng khi user bấm X trên trang ôn tập thông minh.
-     */
     void deleteByUser_UserIdAndVocab_VocabId(Long userId, Long vocabId);
 }

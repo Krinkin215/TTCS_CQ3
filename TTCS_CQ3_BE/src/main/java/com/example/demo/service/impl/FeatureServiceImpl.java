@@ -37,9 +37,8 @@ public class FeatureServiceImpl implements FeatureService {
             int incorrectCount = progress.getIncorrectCount() != null ? progress.getIncorrectCount() : 0;
             double rememberRate = normalizeRememberRate(progress.getRememberRate());
             int days = (int) ChronoUnit.DAYS.between(progress.getCreatedAt(), LocalDateTime.now());
-            double responseTime = 3.0; //tạm thời để mặc định 3.0
+            double responseTime = 3.0; //để mặc định 3.0
 
-            // Truyền pForget từ DB vào FeatureDTO để ReviewService dùng làm nguồn lọc
             Double dbPForget = progress.getPForget();
 
             result.add(new FeatureDTO(vocab, correctCount, incorrectCount, rememberRate, days, responseTime, dbPForget, progress.getId()));

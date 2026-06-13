@@ -14,22 +14,6 @@ import java.util.List;
 @Repository
 public interface LeaderboardRepository extends JpaRepository<UserEntity, Long> {
 
-    /**
-     * =====================================================================
-     * QUERY: XẾP HẠNG THEO ĐIỂM SỐ (sortBy = "score")
-     * =====================================================================
-     * Logic:
-     * - SUM(gs.score) từ game_session trong khoảng thời gian [startDate, endDate]
-     * - LEFT JOIN để user chưa chơi game vẫn xuất hiện với totalScore = 0
-     * - LEFT JOIN user_streak để luôn kèm current_streak (all-time)
-     * - Chỉ lấy user có role = 'USER' (loại ADMIN khỏi leaderboard)
-     * - Sắp xếp: totalScore DESC, sau đó streak DESC (để phân định nếu cùng điểm)
-     * - Giới hạn limit bản ghi (thường 100)
-     *
-     * @param startDate  Thời điểm bắt đầu filter (null = không filter)
-     * @param endDate    Thời điểm kết thúc filter (null = không filter)
-     * @param limit      Số lượng kết quả tối đa
-     */
     @Query(value = """
             SELECT
                 u.user_id        AS userId,
@@ -63,17 +47,6 @@ public interface LeaderboardRepository extends JpaRepository<UserEntity, Long> {
             @Param("limit") int limit
     );
 
-    /**
-     * =====================================================================
-     * QUERY: XẾP HẠNG THEO STREAK (sortBy = "streak")
-     * =====================================================================
-     * Logic:
-     * - Lấy current_streak từ bảng user_streak (BỎ QUA timeFilter - all-time)
-     * - Vẫn kèm totalScore (all-time) để FE hiển thị cột phụ
-     * - Sắp xếp: currentStreak DESC, totalScore DESC
-     *
-     * @param limit Số lượng kết quả tối đa
-     */
     @Query(value = """
             SELECT
                 u.user_id        AS userId,
@@ -94,17 +67,6 @@ public interface LeaderboardRepository extends JpaRepository<UserEntity, Long> {
             nativeQuery = true)
     List<LeaderboardProjection> findTopByStreak(@Param("limit") int limit);
 
-    /**
-     * =====================================================================
-     * QUERY: LẤY THỨ HẠNG CỦA USER HIỆN TẠI (sortBy = "score")
-     * =====================================================================
-     * Dùng subquery để đếm số user có totalScore > totalScore của user hiện tại.
-     * Rank = (số user có điểm cao hơn) + 1
-     *
-     * @param userId    ID của user hiện tại
-     * @param startDate Thời điểm bắt đầu filter
-     * @param endDate   Thời điểm kết thúc filter
-     */
     @Query(value = """
             SELECT COUNT(*) + 1
             FROM (
@@ -132,13 +94,6 @@ public interface LeaderboardRepository extends JpaRepository<UserEntity, Long> {
             @Param("endDate") LocalDateTime endDate
     );
 
-    /**
-     * =====================================================================
-     * QUERY: LẤY THỨ HẠNG CỦA USER HIỆN TẠI (sortBy = "streak")
-     * =====================================================================
-     *
-     * @param userId ID của user hiện tại
-     */
     @Query(value = """
             SELECT COUNT(*) + 1
             FROM user_streak us

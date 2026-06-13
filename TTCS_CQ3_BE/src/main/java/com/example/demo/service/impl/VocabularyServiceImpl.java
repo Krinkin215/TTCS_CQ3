@@ -41,7 +41,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     private final UserVocabProgressRepository userVocabProgressRepository;
     private final FavouriteVocabRepository favouriteVocabRepository;
     private final GameLogRepository gameLogRepository;
-    // Build hàm trả về
+
     private VocabularyResponseDTO toResponseDTO(VocabularyEntity vocab) {
         UserVocabProgressEntity progress = getCurrentUserProgress(vocab.getVocabId());
         return VocabularyResponseDTO.builder()
@@ -96,9 +96,6 @@ public class VocabularyServiceImpl implements VocabularyService {
             vocab.setCreatedBy(userId);
         }
 
-        // Audio generation now handled by Frontend
-        //vocab.setAudio(null);
-
         vocab = vocabularyRepository.save(vocab);
         final VocabularyEntity savedVocab = vocab;
 
@@ -118,19 +115,6 @@ public class VocabularyServiceImpl implements VocabularyService {
 
     @Override
     public List<VocabularyResponseDTO> getVocabsByLessonId(Long lessonId){
-//        List<VocabularyEntity> vocabs = vocabularyRepository.findByLesson_LessonId(lessonId);
-//        return vocabs.stream()
-//                .map(vocab -> VocabularyResponseDTO.builder()
-//                        .vocabId(vocab.getVocabId())
-//                        .word(vocab.getWord())
-//                        .wordType(vocab.getWordType())
-//                        .meaning(vocab.getMeaning())
-//                        .pronunciation(vocab.getPronunciation())
-//                        .audio(vocab.getAudio())
-//                        .example(vocab.getExample())
-//                        .level(vocab.getLevel())
-//                        .build())
-//                .collect(Collectors.toList());
         return vocabularyRepository.findByLesson_LessonId(lessonId)
                 .stream()
                 .map(this::toResponseDTO)
@@ -150,7 +134,6 @@ public class VocabularyServiceImpl implements VocabularyService {
         VocabularyEntity vocab = vocabularyRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Không tìm thấy vocabulary"));
 
-        // Chỉ cập nhật lesson khi lessonId được truyền vào
         if (request.getLessonId() != null) {
             LessonEntity lesson = lessonRepository.findById(request.getLessonId())
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy lesson"));
@@ -176,7 +159,6 @@ public class VocabularyServiceImpl implements VocabularyService {
         VocabularyEntity vocab = vocabularyRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Không tìm thấy vocabulary"));
 
-        // Xóa các bảng phụ thuộc vào vocab trước
         userVocabProgressRepository.deleteByVocab_VocabId(id);
         favouriteVocabRepository.deleteByVocab_VocabId(id);
         collectionVocabRepository.deleteByVocab_VocabId(id);
@@ -190,7 +172,6 @@ public class VocabularyServiceImpl implements VocabularyService {
 
         List<VocabularyEntity> res = vocabularyRepository.findByLesson_Topic_TopicId(topicId);
 
-        //Map Entity chặn data dư thừa trước khi gửi về DTO
         return res.stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());

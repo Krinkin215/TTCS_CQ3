@@ -20,38 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    /*
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRegisterDTO request) {
-        //@Valid: kich hoat Validation cho annotation trong DTO nhu @Blank @Email @Size
-        //@RequestBody: doc JSON tu body request va chuyen thanh DTO
-        //ResponseEntity: cho phep tuy chinh HTTP status code tra ve
-
-        UserResponseDTO response = userService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        //CREATE tra ve 201
-
-        Các kiểu status thường dùng:
-        ResponseEntity.ok(body) => 200: Thành công, có data trả về
-        ResponseEntity.status(HttpStatus.CREATED).body() => 201: Tạo mới thành công
-        ResponseEntity.noContent().build() => 204: Thành công, không có data trả về
-        ResponseEntity.badRequest().body() => 400: Request sai
-        ResponseEntity.status(HttpStatus.UNAUTHORIZED) => 401: Chưa đăng nhập
-        ResponseEntity.status(HttpStatus.FORBIDDEN) => 403: Không có quyền
-        ResponseEntity.notFound().build() => 404: Không tìm thấy
-        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) => 500: Lỗi server
-
-    }
-     */
-
-
-//    @PostMapping("/login")
-//    public ResponseEntity<UserResponseDTO> login(@Valid @RequestBody UserLoginDTO request) {
-//
-//        UserResponseDTO response = userService.login(request);
-//        return ResponseEntity.ok(response);
-//    }
-
     @PutMapping("/me/change-password") //User tu doi mat khau
     public ResponseEntity<String> changePassword(Authentication authentication, @Valid @RequestBody ChangePasswordDTO request) {
 

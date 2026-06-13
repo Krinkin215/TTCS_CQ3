@@ -110,7 +110,6 @@ public class LessonServiceImpl implements LessonService {
 
         @Override
         public void deleteLesson(Long id) {
-                // Kiểm tra Lesson có tồn tại không
                 LessonEntity lesson = lessonRepository.findById(id)
                                 .orElseThrow(() -> new NotFoundException("Không tìm thấy lesson"));
 
@@ -120,10 +119,8 @@ public class LessonServiceImpl implements LessonService {
                 gameLogRepository.deleteByVocab_Lesson_LessonId(id);
                 collectionVocabRepository.deleteByVocab_Lesson_LessonId(id);
 
-                // Xóa tất cả Vocabularies của Lesson trước
                 vocabularyRepository.deleteByLesson(lesson);
 
-                // Sau đó xóa Lesson
                 lessonRepository.deleteById(id);
         }
 

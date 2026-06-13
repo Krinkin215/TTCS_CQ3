@@ -35,7 +35,6 @@ public class GameServiceImpl implements GameService{
     private final UserVocabProgressService userVocabProgressService;
     private final UserStreakService userStreakService;
 
-    // Tao constructor
     public GameServiceImpl(VocabularyRepository vocabularyRepository,
                            UserRepository userRepository,
                            GameSessionRepository gameSessionRepository,
@@ -68,7 +67,6 @@ public class GameServiceImpl implements GameService{
         }
 
         if (!hasExplicitVocabIds) {
-            // Chi random khi backend tu lay theo topic/lesson/collection; danh sach vocabIds phai giu dung lua chon cua user.
             Collections.shuffle(vocabs);
         }
 
@@ -198,9 +196,7 @@ public class GameServiceImpl implements GameService{
                 .gameType(gameType.toUpperCase())
                 .score(sessionScore)
                 .timeSpent(request.getTimeSpent())
-                .startAt(LocalDateTime.now()) // Co the lay tu FE neu muon do chinh xac thoi gian cao hon
-                //.sourceType(SourceType.TOPIC)
-                // Tam thoi de co dinh SourceType, sau doi thanh request.getMode()
+                .startAt(LocalDateTime.now())
                 .build();
 
         GameSessionEntity savedSession = gameSessionRepository.save(session);
@@ -220,7 +216,6 @@ public class GameServiceImpl implements GameService{
                     .isCorrect(logDTO.getIsCorrect())
                     .responseTime(logDTO.getTimeSpent())
                     .createdAt(LocalDateTime.now())
-                    // userAnswer tạm gửi null, hoặc thêm cột userAnswer vào DTO nếu game đó yêu cầu gõ (Listen)
                     .build();
             logsToSave.add(gameLog);
 
@@ -232,7 +227,6 @@ public class GameServiceImpl implements GameService{
             );
         }
 
-        // Luu lai toan bo list log de tang toc do ghi DB
         gameLogRepository.saveAll(logsToSave);
 
         user.setTotalScore((user.getTotalScore() != null ? user.getTotalScore() : 0) + sessionScore);

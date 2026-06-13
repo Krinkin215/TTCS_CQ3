@@ -54,10 +54,6 @@ public class UserServiceImpl implements UserService {
     private final FavouriteVocabRepository favouriteVocabRepository;
     private final GameLogRepository gameLogRepository;
 
-    //PasswordEncoder la bean khai bao trong SecurityConfig
-    //Dung BCrypt de hash password, khong luu mat khau that vao DB
-
-    //Method này chuyển Entity sang DTO, dùng chung cho register và login (toResponseDTO)
     private UserResponseDTO toResponseDTO(UserEntity user) {
         Long totalScore = gameSessionRepository.sumScoreByUserId(user.getUserId());
         return toResponseDTO(user, toIntegerScore(totalScore));
@@ -93,8 +89,6 @@ public class UserServiceImpl implements UserService {
         return 0;
     }
 
-//    private final JwtService jwtService;
-//    private final AuthenticationManager authenticationManager;
     @Transactional  //dam bao toan ven du lieu khi xay ra cac theo tac lam thay doi DB
     @Override
     public UserResponseDTO register(UserRegisterDTO request) {
@@ -108,7 +102,6 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Mật khẩu nhập lại không khớp");
         }
 
-        //Tạo entity từ DTO để lưu vào DB
         UserEntity user = UserEntity.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
@@ -119,16 +112,12 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         UserEntity savedUser = userRepository.save(user);
-        // save() tra ve entity da luu, co du thong tin bao gom user_id, created_at
 
 
-        // Tạo UserStreak mặc định khi đăng ký
-        // currentStreak, longestStreak mặc định = 0 nhờ @PrePersist
         UserStreakEntity streak = new UserStreakEntity();
         streak.setUser(savedUser);
         userStreakRepository.save(streak);
 
-        // Tạo Collection mặc định "Từ vựng của tôi"
         CollectionEntity defaultCollection = new CollectionEntity();
         defaultCollection.setUser(savedUser);
         defaultCollection.setCollectionName("Từ vựng của tôi");
@@ -136,9 +125,6 @@ public class UserServiceImpl implements UserService {
 
         //Dung dto de tra ve, khong tra thang entity, vi chua thong tin nhay cam (password)
         return toResponseDTO(savedUser);
-
-        //Hoac gop 2 dong cuoi
-        //return toResponseDTO(userRepository.save(user));
 
     }
 
@@ -224,7 +210,6 @@ public class UserServiceImpl implements UserService {
         return avatarUrl;
     }
 
-    //Phần dưới này là thao tác Admin - User
     @Override
     public List<UserResponseDTO> getAllUsers() {
 

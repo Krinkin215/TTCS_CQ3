@@ -23,21 +23,19 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
         // Tính khoảng thời gian filter (chỉ dùng khi sortBy = "score")
         LocalDateTime startDate = resolveStartDate(timeFilter);
-        LocalDateTime endDate   = LocalDateTime.now();  // luôn là "hiện tại"
+        LocalDateTime endDate   = LocalDateTime.now();
 
         // Lấy danh sách từ DB theo loại sort
         List<LeaderboardProjection> projections;
         if ("streak".equalsIgnoreCase(sortBy)) {
-            // Streak: BỎ QUA timeFilter – luôn dùng all-time current_streak
+
             projections = leaderboardRepository.findTopByStreak(limit);
         } else {
-            // Score (mặc định): lọc theo timeFilter
             LocalDateTime effectiveStart = "all".equalsIgnoreCase(timeFilter) ? null : startDate;
             LocalDateTime effectiveEnd   = "all".equalsIgnoreCase(timeFilter) ? null : endDate;
             projections = leaderboardRepository.findTopByScore(effectiveStart, effectiveEnd, limit);
         }
 
-        // Map Projection → UserRankDTO, gán rank và isCurrentUser
         List<UserRankDTO> users = new ArrayList<>();
         for (int i = 0; i < projections.size(); i++) {
             LeaderboardProjection p = projections.get(i);
@@ -58,7 +56,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
             users.add(dto);
         }
 
-        // Tính rank của user hiện tại (có thể ngoài top limit)
+        // Tính rank của user hiện tại
         int currentUserRank = 0;
         if (userId != null) {
             if ("streak".equalsIgnoreCase(sortBy)) {
@@ -70,8 +68,6 @@ public class LeaderboardServiceImpl implements LeaderboardService {
             }
         }
 
-
-        // Build response
         return LeaderboardResponseDTO.builder()
                 .users(users)
                 .totalUsers(users.size())
@@ -79,19 +75,15 @@ public class LeaderboardServiceImpl implements LeaderboardService {
                 .build();
     }
 
-    /**
-     * Chuyển đổi timeFilter string → LocalDateTime bắt đầu của khoảng thời gian.
-     * "all" → null (không filter)
-     */
     private LocalDateTime resolveStartDate(String timeFilter) {
         LocalDateTime now = LocalDateTime.now();
         return switch (timeFilter.toLowerCase()) {
-            case "day"   -> now.toLocalDate().atStartOfDay();          // 00:00:00 hôm nay
+            case "day"   -> now.toLocalDate().atStartOfDay();
             case "week"  -> now.toLocalDate().atStartOfDay()
-                              .minusDays(now.getDayOfWeek().getValue() - 1); // Thứ 2 đầu tuần
+                              .minusDays(now.getDayOfWeek().getValue() - 1);
             case "month" -> now.withDayOfMonth(1).toLocalDate().atStartOfDay();
             case "year"  -> now.withDayOfYear(1).toLocalDate().atStartOfDay();
-            default      -> null; // "all" hoặc bất kỳ giá trị không hợp lệ
+            default      -> null;
         };
     }
 }

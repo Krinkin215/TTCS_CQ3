@@ -20,13 +20,11 @@ public class UserResponseDTO {
     private String username;
     private String email;
 
-    //trả đúng format frontend
     @JsonProperty("date_of_birth")
     private String dateOfBirth;
 
     private String role;
     private String createdAt;
-
     private Integer totalScore;
     private Integer rank;
     private Integer currentStreak;

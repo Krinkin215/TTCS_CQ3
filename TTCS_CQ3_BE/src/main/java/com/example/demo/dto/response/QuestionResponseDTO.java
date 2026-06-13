@@ -25,6 +25,5 @@ public class QuestionResponseDTO {
     // Tao mang 4 dap an trac nghiem
     private List<String> options;
 
-    // Index (Vi tri) dap an dung trong mang options
     private Integer correctIndex;
 }

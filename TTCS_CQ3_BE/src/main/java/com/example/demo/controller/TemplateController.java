@@ -17,8 +17,6 @@ public class TemplateController {
 
     @GetMapping("/vocab-import.csv")
     public ResponseEntity<Resource> downloadVocabImportTemplate() {
-        // Cấu trúc cột tương ứng với code Service: Word, Pronunciation, Type, Meaning, Level, Example, Topic, Lesson
-        // Topic, Lesson là tuỳ chọn cho Admin, User sẽ bị bỏ qua
         String csvContent = "Word,Pronunciation,Type,Meaning,Level,Example,Topic,Lesson\n" +
                 "Sightseeing,/ˈsaɪtˌsiː.ɪŋ/,Danh từ,Sự tham quan,A2,We did a bit of sightseeing in London,Travel,London Trip\n" +
                 "Apple,/ˈæp.l/,Danh từ,Quả táo,A1,I eat an apple every day,,";

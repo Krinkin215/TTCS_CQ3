@@ -54,17 +54,17 @@ public class TopicServiceImpl implements TopicService {
         @Override
         public List<TopicResponseDTO> getAllTopics() {
                 List<TopicEntity> topics = topicRepository.findAll();
-                return topics.stream() // xử lý list: chuyển List<Entity> -> List<DTO>
-                                .map(topic -> TopicResponseDTO.builder() // mỗi TopicEntity -> TopicResponseDTO
-                                                .topicId(topic.getTopicId())
-                                                .topicName(topic.getTopicName())
-                                                .image(topic.getImage())
+                return topics.stream()
+                        .map(topic -> TopicResponseDTO.builder() // mỗi TopicEntity -> TopicResponseDTO
+                                        .topicId(topic.getTopicId())
+                                        .topicName(topic.getTopicName())
+                                        .image(topic.getImage())
 
-                                                .totalVocabulary(vocabularyRepository
-                                                                .countByLesson_Topic_TopicId(topic.getTopicId()))
-                                                // Bo sung tinh tong so tu vung trong moi topic
-                                                .build())
-                                .collect(Collectors.toList()); // biến stream thành List<TopicResponseDTO>
+                                        .totalVocabulary(vocabularyRepository
+                                                        .countByLesson_Topic_TopicId(topic.getTopicId()))
+                                        // Bo sung tinh tong so tu vung trong moi topic
+                                        .build())
+                        .collect(Collectors.toList()); // biến stream thành List<TopicResponseDTO>
         }
 
         @Override
@@ -100,7 +100,7 @@ public class TopicServiceImpl implements TopicService {
 
         @Override
         public void deleteTopic(Long id) {
-                // Kiểm tra Topic có tồn tại không
+
                 TopicEntity topic = topicRepository.findById(id)
                                 .orElseThrow(() -> new NotFoundException("Không tìm thấy topic"));
 

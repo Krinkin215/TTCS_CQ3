@@ -9,6 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class VocabScore {
     private VocabularyEntity vocab;
-    private double score;    // finalScore = max(db, ml) — dùng để sắp xếp & lọc
-    private double mlScore;  // mlPForget — giá trị đã lưu DB, hiển thị ra UI
+    private double score;
+    private double mlScore;
 }

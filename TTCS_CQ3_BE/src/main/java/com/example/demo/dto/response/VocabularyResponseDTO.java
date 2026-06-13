@@ -12,7 +12,6 @@ public class VocabularyResponseDTO {
 
     private Long lessonId;
     private String lessonName;
-    //không trả về topic và difficulty(vì đây là độ khó lesson, không phải độ khó từ -> không cần thiết)
     private Long vocabId;
     private String word;
     private String wordType;

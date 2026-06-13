@@ -7,6 +7,5 @@ import lombok.Data;
 public class TopicRequestDTO {
     @NotBlank(message = "Topic name không được để trống")
     private String topicName;
-    
     private String image;
 }

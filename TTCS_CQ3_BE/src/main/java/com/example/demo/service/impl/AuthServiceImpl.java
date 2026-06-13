@@ -38,10 +38,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse register(UserRegisterDTO request) {
         if (userRepository.existsByEmail(request.getEmail()))
             throw new IllegalArgumentException("Email đã được sử dụng");
-//        if (userRepository.existsByUsername(request.getUsername()))
-//            throw new RuntimeException("Username đã được sử dụng");
 
-        // Tự tạo username từ phần trước @ của email (vd: "test@gmail.com" → "test")
         String username = request.getEmail().split("@")[0];
 
         UserEntity user = UserEntity.builder()

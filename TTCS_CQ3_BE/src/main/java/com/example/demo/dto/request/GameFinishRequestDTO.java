@@ -18,7 +18,6 @@ public class GameFinishRequestDTO {
     private Integer totalScore;
     private Integer timeSpent;
 
-    // Phan mo rong (goi y dap an, ...)
     private Integer extraData;
 
     // Danh sach tra loi dung/sai de kiem tra diem so
