@@ -11,4 +11,3 @@ export async function fetchUserById(id) {
 export async function deleteUserById(id) {
   return apiRequest(`/api/admin/users/${id}`, { method: 'DELETE', auth: true });
 }
-

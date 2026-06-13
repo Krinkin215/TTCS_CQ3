@@ -48,6 +48,6 @@ export async function fetchLeaderboard({ sortBy, timeFilter, limit }) {
   const list = Array.isArray(rawList) ? rawList : [];
   const normalized = list.map(normalizeEntry).filter(Boolean);
 
-  // Nếu backend chưa trả rank, gán theo thứ tự đã nhận
+  
   return normalized.map((u, idx) => ({ ...u, rank: u.rank ?? idx + 1 }));
 }

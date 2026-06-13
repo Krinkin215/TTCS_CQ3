@@ -15,4 +15,3 @@ export async function finishGame(gameType, payload) {
     body: payload
   });
 }
-

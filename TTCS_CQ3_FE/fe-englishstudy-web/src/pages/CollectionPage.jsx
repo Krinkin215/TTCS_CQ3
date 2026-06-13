@@ -37,30 +37,30 @@ function CollectionPage({ onNavigateToPractice }) {
             masteredVocab: c.masteredVocab ?? 0
           }));
 
-          // Tìm bộ "Từ vựng của tôi" từ backend
+          
           const myVocabIdx = mapped.findIndex(c => c.name === MY_VOCAB_NAME);
           let myVocabCollection;
           const otherCollections = [];
 
           if (myVocabIdx !== -1) {
-            // Tồn tại trong backend → lưu backendId, đặt id = 0
+            
             const found = mapped[myVocabIdx];
             myVocabCollection = { ...found, backendId: found.id, id: 0 };
             mapped.forEach((c, i) => { if (i !== myVocabIdx) otherCollections.push(c); });
           } else {
-            // Chưa tồn tại → tạo virtual entry
+            
             myVocabCollection = { id: 0, backendId: null, name: MY_VOCAB_NAME, wordCount: 0, masteredVocab: 0 };
             otherCollections.push(...mapped);
           }
 
-          // Luôn đặt "Từ vựng của tôi" ở đầu
+          
           setCollections([myVocabCollection, ...otherCollections]);
 
-          // Lấy số lượng thực tế cho "Từ vựng của tôi" ngầm trong lúc tải
+          
           fetchUserVocabularies().then(userVocabs => {
             if (cancelled) return;
             const list = Array.isArray(userVocabs) ? userVocabs : (userVocabs?.items ?? userVocabs?.data ?? []);
-            // Filter only truly user-created words (no topic/lesson)
+            
             const actualCount = list.filter(w => {
               const hasTopic = w.topicId != null || w.topic_id != null;
               const hasLesson = w.lessonId != null || w.lesson_id != null || w.lessonName != null;
@@ -72,7 +72,7 @@ function CollectionPage({ onNavigateToPractice }) {
           }).catch(() => { });
         }
       } catch {
-        // API lỗi → vẫn hiển thị "Từ vựng của tôi" rỗng
+        
         if (!cancelled) setCollections([{ id: 0, backendId: null, name: MY_VOCAB_NAME, wordCount: 0, masteredVocab: 0 }]);
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -84,23 +84,23 @@ function CollectionPage({ onNavigateToPractice }) {
 
 
 
-  // đổi tên
+  
   const [editingId, setEditingId] = useState(null);
   const [tempName, setTempName] = useState('');
 
-  // xác nhận xóa
+  
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [collectionToDelete, setCollectionToDelete] = useState(null);
   const [openWordListId, setOpenWordListId] = useState(null);
 
-  // tạo bộ từ mới
+  
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState('');
 
 
   const [searchTerm, setSearchTerm] = useState('');
 
-  // danh sách từ trong bộ từ
+  
   const [activeCollection, setActiveCollection] = useState(null);
   const [showWordListModal, setShowWordListModal] = useState(false);
   const [collectionWords, setCollectionWords] = useState([]);
@@ -116,16 +116,16 @@ function CollectionPage({ onNavigateToPractice }) {
 
   const [activeFlashcardSession, setActiveFlashcardSession] = useState(null);
 
-  // modal thêm vào bộ từ
+  
   const [showAddToCollectionModal, setShowAddToCollectionModal] = useState(false);
   const [wordToAdd, setWordToAdd] = useState(null);
   const [addModalSearchTerm, setAddModalSearchTerm] = useState('');
   const [selectedTargetCollectionIds, setSelectedTargetCollectionIds] = useState([]);
-  // map { collectionId -> Set<vocabId> } để kiểm tra từ đã tồn tại trong modal
+  
   const [collectionVocabMap, setCollectionVocabMap] = useState({});
   const [isLoadingVocabMap, setIsLoadingVocabMap] = useState(false);
 
-  // chỉnh sửa từ của tôi
+  
   const [showEditWordModal, setShowEditWordModal] = useState(false);
   const [editingWords, setEditingWords] = useState([]);
 
@@ -207,7 +207,7 @@ function CollectionPage({ onNavigateToPractice }) {
     setAddModalSearchTerm('');
     setShowAddToCollectionModal(true);
 
-    // Fetch vocab của tất cả các collection (trừ "Từ vựng của tôi") để build map kiểm tra trùng
+    
     const targetColls = collections.filter(c => c.name !== MY_VOCAB_NAME && c.id !== 0);
     if (targetColls.length === 0) return;
 
@@ -228,7 +228,7 @@ function CollectionPage({ onNavigateToPractice }) {
       });
       setCollectionVocabMap(newMap);
     } catch {
-      // lỗi thì để map rỗng, modal vẫn hoạt động bình thường
+      
     } finally {
       setIsLoadingVocabMap(false);
     }
@@ -296,7 +296,7 @@ function CollectionPage({ onNavigateToPractice }) {
     const trimmedName = newCollectionName.trim();
     if (!trimmedName) return;
 
-    // Kiểm tra trùng tên (không phân biệt hoa thường)
+    
     const isDuplicateName = collections.some(
       c => c.name.trim().toLowerCase() === trimmedName.toLowerCase()
     );
@@ -391,12 +391,12 @@ function CollectionPage({ onNavigateToPractice }) {
 
     try {
       const isMyVocab = collection.name === MY_VOCAB_NAME;
-      const apiId = collection.backendId ?? collection.id; // dùng backendId nếu có
+      const apiId = collection.backendId ?? collection.id; 
 
       let vocabPromise;
       if (isMyVocab) {
-        // "Từ vựng của tôi" luôn lấy từ fetchUserVocabularies (từ user tự tạo)
-        // Không dùng fetchCollectionVocabs vì collection này không chứa vocab trong bảng collection_vocab
+        
+        
         vocabPromise = fetchUserVocabularies();
       } else {
         vocabPromise = fetchCollectionVocabs(apiId);
@@ -410,7 +410,7 @@ function CollectionPage({ onNavigateToPractice }) {
         ? (Array.isArray(data.value) ? data.value : (data.value?.items ?? data.value?.data ?? []))
         : [];
 
-      // For "Từ vựng của tôi", filter only truly user-created words (no topic/lesson)
+      
       if (isMyVocab) {
         list = list.filter(w => {
           const hasTopic = w.topicId != null || w.topic_id != null;
@@ -423,8 +423,8 @@ function CollectionPage({ onNavigateToPractice }) {
         : [];
 
       if (Array.isArray(list) && list.length > 0) {
-        // Nếu lấy từ fetchUserVocabularies, dữ liệu đã đầy đủ
-        // Nếu lấy từ fetchCollectionVocabs, cần fetch chi tiết
+        
+        
         const needsDetail = !isMyVocab;
         let detailResults = [];
         if (needsDetail) {
@@ -449,13 +449,13 @@ function CollectionPage({ onNavigateToPractice }) {
         }));
       }
 
-      // Cập nhật wordCount thực tế cho card hiển thị
+      
       const actualCount = Array.isArray(list) ? list.length : 0;
       setCollections(prev => prev.map(c =>
         c.id === collection.id ? { ...c, wordCount: actualCount } : c
       ));
     } catch {
-      // API lỗi, giữ mảng rỗng
+      
     }
   };
 
@@ -516,7 +516,7 @@ function CollectionPage({ onNavigateToPractice }) {
     return true;
   });
 
-  // cột hành động — dùng Portal để dropdown không bị overflow clip
+  
   const CollectionWordActionColumn = ({ item }) => {
     const [openMenuId, setOpenMenuId] = useState(null);
     const btnRef = useRef(null);
@@ -590,7 +590,7 @@ function CollectionPage({ onNavigateToPractice }) {
   return (
     <div className="p-8 bg-slate-50 min-h-screen relative">
 
-      {/* header */}
+
       <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
         <div className="flex items-center gap-6">
           <div>
@@ -598,7 +598,7 @@ function CollectionPage({ onNavigateToPractice }) {
             <p className="text-gray-500 mt-1">Quản lý và ôn tập từ vựng theo chủ đề cá nhân</p>
           </div>
 
-          {/* nút tạo bộ từ */}
+
           <button
             onClick={() => setShowCreateModal(true)}
             className="flex items-center gap-2 px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg transition-colors shadow-sm"
@@ -620,10 +620,10 @@ function CollectionPage({ onNavigateToPractice }) {
         </div>
       </div>
 
-      {/* danh sách bộ từ */}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-10">
         {filteredCollections.map((collection, idx) => {
-          // Số thứ tự: bỏ qua "Từ vựng của tôi", đếm từ 1
+          
           const displayIndex = filteredCollections
             .slice(0, idx)
             .filter(c => c.name !== MY_VOCAB_NAME).length + 1;
@@ -648,7 +648,7 @@ function CollectionPage({ onNavigateToPractice }) {
                   )}
                 </div>
 
-                {/* tiêu đề và sửa tên */}
+
                 {editingId === collection.id ? (
                   <div className="flex gap-2 items-center -ml-1 mb-3" onClick={(e) => e.stopPropagation()}>
                     <div className="relative flex-1">
@@ -746,7 +746,7 @@ function CollectionPage({ onNavigateToPractice }) {
         </div>
       )}
 
-      {/* xác nhận xóa */}
+
       <ConfirmModal
         isOpen={showDeleteModal}
         onClose={() => {
@@ -768,7 +768,7 @@ function CollectionPage({ onNavigateToPractice }) {
         cancelText="Hủy không xóa"
         isDanger={true}
       />
-      {/* modal tạo bộ từ */}
+
       <ModalWrapper isOpen={showCreateModal} zIndex="z-[100]">
         <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
           <h2 className="text-2xl font-bold text-cyan-950">Tạo bộ từ mới</h2>
@@ -799,7 +799,7 @@ function CollectionPage({ onNavigateToPractice }) {
             <span className="absolute right-4 top-[2.4rem] text-xs font-medium text-gray-400">
               {newCollectionName.length}/{COLLECTION_NAME_LIMIT}
             </span>
-            {/* Cảnh báo trùng tên inline */}
+
             {newCollectionName.trim() && collections.some(c => c.name.trim().toLowerCase() === newCollectionName.trim().toLowerCase()) && (
               <p className="mt-1.5 text-xs font-semibold text-red-500 flex items-center gap-1">
                 Bộ từ này đã tồn tại, vui lòng chọn tên khác.
@@ -832,7 +832,7 @@ function CollectionPage({ onNavigateToPractice }) {
           </div>
         </form>
       </ModalWrapper>
-      {/* modal danh sách từ trong bộ */}
+
       <ModalWrapper isOpen={showWordListModal && activeCollection} zIndex="z-[100]" className="rounded-2xl p-6 w-full max-w-6xl flex flex-col max-h-[90vh]">
 
 
@@ -856,7 +856,7 @@ function CollectionPage({ onNavigateToPractice }) {
               className="w-56"
             />
 
-            {/* bộ lọc */}
+
             <FilterDropdown
               label={(count) => count > 0 ? `${count} bộ lọc` : 'Bộ lọc'}
               activeCount={selectedWordLevels.length + selectedWordTypes.length}
@@ -958,7 +958,7 @@ function CollectionPage({ onNavigateToPractice }) {
         isDanger={true}
       />
 
-      {/* modal thêm vào bộ từ */}
+
       <AddToCollectionModal
         isOpen={showAddToCollectionModal}
         onClose={() => setShowAddToCollectionModal(false)}
@@ -969,7 +969,7 @@ function CollectionPage({ onNavigateToPractice }) {
         onConfirm={handleConfirmAddToCollections}
       />
 
-      {/* modal chỉnh sửa từ */}
+
       <ModalWrapper isOpen={showEditWordModal} zIndex="z-[200]" className="rounded-[1.5rem] w-full max-w-6xl flex flex-col max-h-[90vh] overflow-hidden">
 
 
@@ -1032,7 +1032,7 @@ function CollectionPage({ onNavigateToPractice }) {
         </div>
       </ModalWrapper>
 
-      {/* flashcard */}
+
       {activeFlashcardSession && (
         <FlashcardLearning
           collection={activeFlashcardSession.collection}

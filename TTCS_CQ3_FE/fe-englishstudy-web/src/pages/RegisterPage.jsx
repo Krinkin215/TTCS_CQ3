@@ -18,7 +18,7 @@ function RegisterPage({ onNavigateToLogin }) {
     confirmPassword: ''
   });
 
-  // Ngày hôm nay định dạng YYYY-MM-DD (dùng cho thuộc tính max)
+  
   const todayStr = new Date().toISOString().split('T')[0];
 
   const [showPassword, setShowPassword] = useState(false);
@@ -71,7 +71,7 @@ function RegisterPage({ onNavigateToLogin }) {
       return;
     }
 
-    // Kiểm tra ngày sinh không được trong tương lai
+    
     if (formData.date_of_birth > todayStr) {
       setErrors(prev => ({ ...prev, date_of_birth: 'Ngày sinh không được là ngày trong tương lai.' }));
       toast.error('Ngày sinh không hợp lệ!');

@@ -19,13 +19,13 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
       let vocabList = [];
       let isCollectionSource = false;
 
-      // Load vocab theo lesson hoặc collection
+      
       if (!collection && lesson?.id) {
         try {
           const res = await fetchLessonVocabularies(lesson.id);
           const list = Array.isArray(res) ? res : (res?.items ?? res?.data ?? []);
           if (Array.isArray(list)) vocabList = list;
-        } catch { /* ignore */ }
+        } catch {  }
       } else if (collection) {
         const isMyVocab = collection.name === MY_VOCAB_NAME;
         const apiId = collection.backendId ?? collection.id;
@@ -33,36 +33,36 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
         try {
           let res;
           if (isMyVocab) {
-            // "Từ vựng của tôi": luôn lấy từ user vocabs (không lưu trong bảng collection_vocab)
+            
             res = await fetchUserVocabularies();
-            // Lọc chỉ lấy từ do user tự tạo (không thuộc topic/lesson)
+            
             const rawList = Array.isArray(res) ? res : (res?.items ?? res?.data ?? []);
             vocabList = rawList.filter(w => {
               const hasTopic = w.topicId != null || w.topic_id != null;
               const hasLesson = w.lessonId != null || w.lesson_id != null || w.lessonName != null;
               return !hasTopic && !hasLesson;
             });
-            // isCollectionSource = false: dữ liệu đã đầy đủ, không cần fetch thêm
+            
           } else {
             isCollectionSource = true;
             res = await fetchCollectionVocabs(apiId);
             const list = Array.isArray(res) ? res : (res?.items ?? res?.data ?? []);
             if (Array.isArray(list)) vocabList = list;
           }
-        } catch { /* ignore */ }
+        } catch {  }
       }
 
-      // Load favorites để đánh dấu trái tim
+      
       let loadedFavIds = [];
       try {
         const favRes = await fetchFavorites();
         const favList = Array.isArray(favRes) ? favRes : (favRes?.items ?? favRes?.data ?? []);
         loadedFavIds = favList.map(f => f.vocabId ?? f.id).filter(Boolean);
-      } catch { /* ignore */ }
+      } catch {  }
 
       if (Array.isArray(vocabList) && vocabList.length > 0) {
-        // Nếu nguồn là collection (CollectionVocabResponse) → thiếu wordType, example
-        // → cần fetch chi tiết từng từ
+        
+        
         let detailedList = vocabList;
         if (isCollectionSource) {
           const detailResults = await Promise.allSettled(
@@ -115,7 +115,7 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
       }
       setFavIds(prev => prev.includes(id) ? prev.filter(fId => fId !== id) : [...prev, id]);
       setLocalWords(prev => prev.map(w => w.id === id ? { ...w, isFavorite: !w.isFavorite } : w));
-    } catch { /* ignore */ }
+    } catch {  }
   };
 
   useEffect(() => {
@@ -148,7 +148,7 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
     if (collection) return;
     if (!lesson?.id) return;
 
-    // best-effort lưu tiến độ học (gửi isCorrect = true cho từ đã xem)
+    
     Promise.all(
       localWords.map((w) =>
         saveVocabProgress({
@@ -179,14 +179,14 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
   return (
     <div className="fixed inset-0 z-[999] bg-slate-50 flex flex-col items-center pt-8 overflow-y-auto animate-in fade-in duration-300">
       
-      {/* THANH TOP BAR (TIẾN ĐỘ & NÚT THOÁT) */}
+
       <div className="w-full max-w-4xl px-4 flex items-center justify-between bg-white rounded-full shadow-sm border border-gray-200 py-3 mb-10 shrink-0">
-        {/* Tiến độ text */}
+
         <div className="flex items-center gap-4 pl-4 w-48 text-cyan-900 font-bold">
           <span className="text-xl">{isFinished ? localWords.length : currentIndex + 1} / {localWords.length}</span>
         </div>
 
-        {/* Thanh tiến độ (Progress bar) */}
+
         <div className="flex-1 flex flex-col items-center justify-center px-6">
           <div className="text-sm font-bold text-gray-400 mb-1.5 truncate max-w-lg text-center">
             {collection ? (
@@ -203,7 +203,7 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
           </div>
         </div>
 
-        {/* Nút Thoát */}
+
         <div className="flex justify-end pr-2 w-48">
           <button 
             onClick={onExit}
@@ -214,11 +214,11 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
         </div>
       </div>
 
-      {/* NỘI DUNG CHÍNH (FLASHCARD HOẶC MÀN HÌNH KẾT THÚC) */}
+
       {!isFinished ? (
         <div className="w-full max-w-3xl flex flex-col items-center">
           
-          {/* Thẻ Flashcard */}
+
           <div 
             className="relative w-full h-[400px] cursor-pointer group"
             style={{ perspective: '1000px' }}
@@ -231,12 +231,12 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
                 transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' 
               }}
             >
-              {/* MẶT TRƯỚC */}
+
               <div 
                 className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-white"
                 style={{ backfaceVisibility: 'hidden' }}
               >
-                {/* Trạng thái & Yêu thích */}
+
                 <div className="absolute top-8 left-8 right-8 flex justify-between items-center z-10 pointer-events-none">
                   <div 
                     onClick={(e) => e.stopPropagation()}
@@ -275,12 +275,12 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
                 </span>
               </div>
 
-              {/* MẶT SAU */}
+
               <div 
                 className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-white"
                 style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
               >
-                {/*  Trạng thái & Yêu thích ở mặt sau */}
+
                 <div className="absolute top-8 left-8 right-8 flex justify-between items-center z-10 pointer-events-none" style={{ transform: 'rotateY(0deg)' }}>
                   <div 
                     onClick={(e) => e.stopPropagation()}
@@ -316,7 +316,7 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
             </div>
           </div>
 
-          {/* Thanh Điều hướng */}
+
           <div className="flex justify-between items-center w-full mt-10 px-8">
             <button 
               onClick={handlePrev} 
@@ -336,7 +336,7 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
 
       ) : (
 
-        // MÀN HÌNH KẾT THÚC BÀI HỌC
+        
         <div className="w-full max-w-2xl bg-white rounded-3xl p-10 shadow-xl border border-gray-100 flex flex-col items-center animate-in zoom-in-95 duration-300">
           <div className="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-6 shadow-inner">
             <CheckCircle2 size={48} />
@@ -366,7 +366,7 @@ export default function FlashcardLearning({ topic, lesson, collection, onExit, o
              </button>
           </div>
 
-          {/* CHỈ HIỂN THỊ ĐIỀU HƯỚNG NẾU LÀ BÀI HỌC CỦA CHỦ ĐỀ */}
+
           {!collection && (
             <div className="flex w-full justify-between pt-6 border-t border-gray-100">
               {hasPrevLesson ? (

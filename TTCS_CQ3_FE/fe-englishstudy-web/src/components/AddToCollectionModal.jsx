@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, X, CheckCircle2, Loader2, FolderOpen } from 'lucide-react';
 
-/**
- * Modal thêm từ vào bộ từ (không bao gồm "Từ vựng của tôi").
- * Hiển thị badge "Đã có" nếu từ đã tồn tại trong bộ đó.
- *
- * Props:
- *  - isOpen: boolean
- *  - onClose: () => void
- *  - wordToAdd: { id, word }
- *  - collections: Array<{ id, name }> — đã lọc bỏ "Từ vựng của tôi"
- *  - collectionVocabMap: { [collectionId]: Set<vocabId> }
- *  - isLoadingVocabs: boolean — đang fetch vocab để check trùng
- *  - onConfirm: (selectedIds: number[]) => void
- */
+
 export default function AddToCollectionModal({
   isOpen,
   onClose,
@@ -37,14 +25,14 @@ export default function AddToCollectionModal({
 
   const wordId = wordToAdd?.id;
 
-  // Phân loại collection: đã có từ / chưa có từ
+  
   const filteredCollections = collections.filter((c) =>
     c.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const isAlreadyIn = (collId) => {
     const vocabSet = collectionVocabMap[collId];
-    if (!vocabSet) return false; // chưa load → không biết → coi như chưa có
+    if (!vocabSet) return false; 
     return vocabSet.has(wordId);
   };
 
@@ -78,7 +66,7 @@ export default function AddToCollectionModal({
     <div className="fixed inset-0 bg-cyan-950/70 z-[200] flex items-center justify-center p-4 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full border border-gray-100 flex flex-col max-h-[88vh] animate-in zoom-in duration-200">
 
-        {/* Header */}
+
         <div className="flex justify-between items-start p-5 pb-4 border-b border-gray-100 shrink-0">
           <div>
             <h2 className="text-xl font-bold text-cyan-950">Lưu vào bộ từ</h2>
@@ -95,7 +83,7 @@ export default function AddToCollectionModal({
           </button>
         </div>
 
-        {/* Search + Select All */}
+
         <div className="p-4 border-b border-gray-50 shrink-0 bg-gray-50/50">
           <div className="flex items-center justify-between gap-3">
             <div className="relative flex-1">
@@ -108,7 +96,7 @@ export default function AddToCollectionModal({
                 className="w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
               />
             </div>
-            {/* Chỉ cho "Chọn tất cả" trong nhóm chưa có */}
+
             {availableCollections.length > 0 && (
               <label className="flex items-center gap-2 cursor-pointer shrink-0" title="Chọn tất cả bộ chưa có từ này">
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Tất cả</span>
@@ -123,10 +111,10 @@ export default function AddToCollectionModal({
           </div>
         </div>
 
-        {/* Danh sách collection */}
+
         <div className="flex-1 overflow-y-auto p-2 scrollbar-thin">
 
-          {/* Loading overlay */}
+
           {isLoadingVocabs && (
             <div className="flex items-center justify-center gap-2 py-3 text-sm text-cyan-600 font-medium bg-cyan-50/60 rounded-lg mx-1 mb-2">
               <Loader2 size={16} className="animate-spin" />
@@ -142,7 +130,7 @@ export default function AddToCollectionModal({
             </div>
           ) : (
             <>
-              {/* Nhóm: chưa có từ */}
+
               {availableCollections.length > 0 && (
                 <div className="mb-1">
                   {existingCollections.length > 0 && (
@@ -169,7 +157,7 @@ export default function AddToCollectionModal({
                 </div>
               )}
 
-              {/* Nhóm: đã có từ */}
+
               {existingCollections.length > 0 && (
                 <div className="mt-1">
                   <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-3 py-1.5 border-t border-gray-100 pt-3">
@@ -195,7 +183,7 @@ export default function AddToCollectionModal({
           )}
         </div>
 
-        {/* Footer */}
+
         <div className="p-4 border-t border-gray-100 flex justify-between items-center gap-3 shrink-0 bg-gray-50/50 rounded-b-2xl">
           <p className="text-xs text-gray-400">
             {selectedIds.length > 0

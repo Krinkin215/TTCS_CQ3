@@ -111,7 +111,7 @@ export default function AdminTopicManagement() {
           setTopics(mappedTopics);
         }
       } catch {
-        // API lỗi, hiển thị danh sách rỗng
+        
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -122,27 +122,27 @@ export default function AdminTopicManagement() {
     };
   }, []);
 
-  // Modals Quản lý Chủ đề
+  
   const [showCreateTopicModal, setShowCreateTopicModal] = useState(false);
   const [showEditTopicModal, setShowEditTopicModal] = useState(false);
   const [editingTopic, setEditingTopic] = useState(null);
   const [newTopicName, setNewTopicName] = useState("");
-  const [newTopicImage, setNewTopicImage] = useState(""); // URL preview
-  const [newTopicImageFile, setNewTopicImageFile] = useState(null); // File thực để upload
-  const [newTopicImageTab, setNewTopicImageTab] = useState("url"); // 'url' | 'upload'
+  const [newTopicImage, setNewTopicImage] = useState(""); 
+  const [newTopicImageFile, setNewTopicImageFile] = useState(null); 
+  const [newTopicImageTab, setNewTopicImageTab] = useState("url"); 
   const topicImageFileRef = useRef(null);
 
   const [showCreateLessonModal, setShowCreateLessonModal] = useState(false);
   const [newLessonName, setNewLessonName] = useState("");
   const [newLessonDifficulty, setNewLessonDifficulty] = useState(1);
 
-  // modal xóa
+  
   const [showConfirmDeleteTopic, setShowConfirmDeleteTopic] = useState(false);
   const [topicToDelete, setTopicToDelete] = useState(null);
   const [showConfirmDeleteWord, setShowConfirmDeleteWord] = useState(false);
   const [wordToDelete, setWordToDelete] = useState(null);
 
-  // Modals Xem chi tiết (Danh sách từ vựng Chủ đề/Bài học)
+  
   const [showTopicWordsModal, setShowTopicWordsModal] = useState(false);
   const [activeTopic, setActiveTopic] = useState(null);
 
@@ -151,38 +151,38 @@ export default function AdminTopicManagement() {
   const [showLessonWordsModal, setShowLessonWordsModal] = useState(false);
   const [activeLesson, setActiveLesson] = useState(null);
 
-  // state từ vựng trong modal
+  
   const [modalWords, setModalWords] = useState([]);
   const [wordSearchTerm, setWordSearchTerm] = useState("");
 
-  // lọc bài học trong modal chủ đỀ
+  
   const [selectedLessonFilters, setSelectedLessonFilters] = useState([]);
   const [showLessonFilterDropdown, setShowLessonFilterDropdown] =
     useState(false);
 
-  // modal di chuyển từ vựng
+  
   const [showMoveWordModal, setShowMoveWordModal] = useState(false);
   const [movingWords, setMovingWords] = useState([]);
   const [moveTargetTopicId, setMoveTargetTopicId] = useState("");
   const [moveTargetLessonId, setMoveTargetLessonId] = useState("");
   const [moveMode, setMoveMode] = useState("full");
 
-  // modal chỉnh sửa từ vựng
+  
   const [showEditWordModal, setShowEditWordModal] = useState(false);
   const [editingWords, setEditingWords] = useState([]);
 
-  // import CSV cho bài học
+  
   const lessonCsvFileRef = useRef(null);
 
-  // modal chỉnh sửa bài học
+  
   const [showEditLessonModal, setShowEditLessonModal] = useState(false);
   const [editingLesson, setEditingLesson] = useState(null);
   const [editLessonName, setEditLessonName] = useState("");
   const [editLessonDifficulty, setEditLessonDifficulty] = useState(1);
 
-  // menu hành động dùng chung, tránh nhiều menu mở cùng lúc
+  
   const [openMenuId, setOpenMenuId] = useState(null);
-  // vị trí của menu đang mở (fixed position)
+  
   const [menuAnchor, setMenuAnchor] = useState(null);
 
   const handleToggleMenu = (id, event) => {
@@ -251,7 +251,7 @@ export default function AdminTopicManagement() {
     setEditingWords([]);
   };
 
-  // CÁC HÀM XỬ LÝ CHỦ ĐỀ
+  
   const filteredTopics = topics
     .filter((t) => t.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -271,7 +271,7 @@ export default function AdminTopicManagement() {
   const handleCreateTopic = async () => {
     if (!newTopicName.trim()) return;
 
-    // Kiểm tra trùng tên chủ đề (không phân biệt hoa thường)
+    
     const isDuplicate = topics.some(
       (t) => t.title.trim().toLowerCase() === newTopicName.trim().toLowerCase()
     );
@@ -281,16 +281,16 @@ export default function AdminTopicManagement() {
     }
 
     try {
-      // Tạo topic trước (không kèm ảnh nếu sẽ upload file)
+      
       const created = await apiCreateTopic({
         topicName: newTopicName,
-        image: newTopicImageFile ? "" : newTopicImage, // chỉ truyền URL nếu không có file
+        image: newTopicImageFile ? "" : newTopicImage, 
       }).catch(() => null);
       const newId = created?.id ?? created?.topicId ?? null;
 
       let finalImageUrl = created?.image ?? created?.imageUrl ?? newTopicImage.trim();
 
-      // Nếu có file ảnh được chọn → upload lên Cloudinary
+      
       if (newId && newTopicImageFile) {
         try {
           const uploadedUrl = await uploadTopicImage(newId, newTopicImageFile);
@@ -329,14 +329,14 @@ export default function AdminTopicManagement() {
     if (!file) return;
     setNewTopicImageFile(file);
     const reader = new FileReader();
-    reader.onload = (ev) => setNewTopicImage(ev.target.result); // chỉ để preview
+    reader.onload = (ev) => setNewTopicImage(ev.target.result); 
     reader.readAsDataURL(file);
   };
 
   const handleEditTopic = async () => {
     if (!newTopicName.trim() || !editingTopic) return;
 
-    // Kiểm tra trùng tên chủ đề (bỏ qua chính topic đang sửa)
+    
     const isDuplicate = topics.some(
       (t) =>
         t.id !== editingTopic.id &&
@@ -350,7 +350,7 @@ export default function AdminTopicManagement() {
     try {
       let finalImageUrl = newTopicImage;
 
-      // Nếu có file ảnh mới → upload lên Cloudinary trước
+      
       if (newTopicImageFile) {
         try {
           finalImageUrl = await uploadTopicImage(editingTopic.id, newTopicImageFile);
@@ -420,7 +420,7 @@ export default function AdminTopicManagement() {
     }
   };
 
-  // IMPORT CSV CHO BÀI HỌC
+  
   const handleLessonCsvImport = async (e) => {
     const file = e.target.files?.[0];
     if (!file || !activeLesson || !activeTopic) return;
@@ -430,28 +430,28 @@ export default function AdminTopicManagement() {
         lessonId: activeLesson.id,
       });
 
-      // Đọc kết quả từ response { successCount, errorCount, errors }
+      
       const successCount = result?.successCount ?? 0;
       const errorCount = result?.errorCount ?? 0;
       const errors = Array.isArray(result?.errors) ? result.errors : [];
 
       if (successCount === 0 && errorCount > 0) {
-        // Toàn bộ từ đều trùng lặp / lỗi → báo thất bại
+        
         toast.error(
           `Import thất bại! ${errorCount} từ đã tồn tại hoặc có lỗi. Không có từ nào được thêm mới.`,
           { duration: 5000 }
         );
-        // Hiển thị chi tiết lỗi nếu số lỗi ít
+        
         if (errors.length > 0 && errors.length <= 10) {
           errors.forEach((err) => toast.error(err, { duration: 4000 }));
         }
-        // Reset file input và dừng
+        
         e.target.value = null;
         return;
       }
 
       if (successCount > 0 && errorCount > 0) {
-        // Một phần thành công, một phần lỗi
+        
         toast(
           `Đã thêm ${successCount} từ mới. ${errorCount} từ bị bỏ qua do trùng lặp hoặc lỗi.`,
           { icon: "⚠️", duration: 5000 }
@@ -460,13 +460,13 @@ export default function AdminTopicManagement() {
           errors.forEach((err) => toast.error(err, { duration: 4000 }));
         }
       } else if (successCount > 0) {
-        // Tất cả thành công
+        
         toast.success(
           `Đã import thành công ${successCount} từ vào bài học "${activeLesson.name}"!`
         );
       }
 
-      // reload words for this lesson
+      
       const words = await fetchLessonVocabularies(activeLesson.id);
       const list = Array.isArray(words)
         ? words
@@ -486,19 +486,19 @@ export default function AdminTopicManagement() {
           }))
         : [];
 
-      // Cập nhật danh sách từ trong modal
+      
       setModalWords(mappedList);
 
       const newWordCount = mappedList.length;
 
-      // Cập nhật wordCount của bài học trong danh sách topics (render ngay)
+      
       setTopics((prevTopics) =>
         prevTopics.map((t) => {
           if (t.id !== activeTopic.id) return t;
           const updatedLessons = t.lessons.map((l) =>
             l.id === activeLesson.id ? { ...l, wordCount: newWordCount } : l
           );
-          // Tính lại totalVocab của chủ đề
+          
           const newTotalVocab = updatedLessons.reduce(
             (sum, l) => sum + (l.wordCount ?? 0),
             0
@@ -507,7 +507,7 @@ export default function AdminTopicManagement() {
         })
       );
 
-      // Cập nhật activeTopic để modal bài học hiển thị đúng wordCount
+      
       setActiveTopic((prev) => {
         if (!prev || prev.id !== activeTopic.id) return prev;
         const updatedLessons = prev.lessons.map((l) =>
@@ -520,7 +520,7 @@ export default function AdminTopicManagement() {
         return { ...prev, lessons: updatedLessons, totalVocab: newTotalVocab };
       });
 
-      // Cập nhật activeLesson
+      
       setActiveLesson((prev) =>
         prev ? { ...prev, wordCount: newWordCount } : prev
       );
@@ -531,7 +531,7 @@ export default function AdminTopicManagement() {
     }
   };
 
-  // CHỈNH SỬA BÀI HỌC
+  
   const handleOpenEditLesson = async (lesson, topic) => {
     setEditingLesson(lesson);
     setEditLessonName(lesson.name);
@@ -552,7 +552,7 @@ export default function AdminTopicManagement() {
         });
       }
     } catch {
-      // fallback giữ dữ liệu hiện có
+      
     }
   };
 
@@ -592,7 +592,7 @@ export default function AdminTopicManagement() {
     }
   };
 
-  // XÓA BÀI HỌC
+  
   const [showConfirmDeleteLesson, setShowConfirmDeleteLesson] = useState(false);
   const [lessonToDelete, setLessonToDelete] = useState(null);
 
@@ -622,7 +622,7 @@ export default function AdminTopicManagement() {
     }
   };
 
-  // CÁC HÀM MỞ MODAL XEM CHI TIẾT
+  
   const openTopicWords = async (topic) => {
     setActiveTopic(topic);
     try {
@@ -681,7 +681,7 @@ export default function AdminTopicManagement() {
         prevTopics.map((t) => (t.id === topic.id ? updatedTopic : t)),
       );
     } catch {
-      // nếu fetch count lỗi thì vẫn mở modal với dữ liệu hiện có
+      
     }
     setShowTopicLessonsModal(true);
   };
@@ -718,7 +718,7 @@ export default function AdminTopicManagement() {
     setShowLessonWordsModal(true);
   };
 
-  // CÁC HÀM XỬ LÝ TỪ VỰNG
+  
 
   const handleDeleteWordConfirm = async () => {
     if (!wordToDelete) return;
@@ -770,7 +770,7 @@ export default function AdminTopicManagement() {
     toast.success("Đã di chuyển thành công!");
   };
 
-  // cột action cho bảng từ vựng trong modal chủ đề
+  
   const TopicActionColumn = ({ item }) => (
     <div className="flex justify-center">
       <button
@@ -844,7 +844,7 @@ export default function AdminTopicManagement() {
     </div>
   );
 
-  // cột action cho bảng từ vựng trong modal bài học
+  
   const LessonActionColumn = ({ item }) => (
     <div className="flex justify-center">
       <button
@@ -917,7 +917,7 @@ export default function AdminTopicManagement() {
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      {/* thanh công cụ */}
+
       <div className="bg-white rounded-[1.25rem] shadow-sm border border-gray-200 p-4 mb-6 flex justify-between items-center">
         <div className="flex gap-4 items-center w-full max-w-xl">
           <SearchBar
@@ -937,7 +937,7 @@ export default function AdminTopicManagement() {
         </div>
       </div>
 
-      {/* danh sách chủ đề */}
+
       <div>
         <h2 className="text-2xl font-bold text-[#083344] mb-6 border-b-2 border-gray-200 pb-2 inline-block">
           Chủ đề từ vựng
@@ -966,7 +966,7 @@ export default function AdminTopicManagement() {
                     className="w-full h-full object-contain"
                   />
                 </div>
-                {/* tiêu đề và nút sửa */}
+
                 <div className="flex items-center gap-1.5 mb-3 pr-10">
                   <h3 className="font-bold text-gray-800 line-clamp-1">
                     {topic.title}
@@ -1047,13 +1047,13 @@ export default function AdminTopicManagement() {
         </div>
       </div>
 
-      {/* modal tạo chủ đề */}
+
       <ModalWrapper isOpen={showCreateTopicModal} zIndex="z-[200]">
         <h3 className="text-xl font-bold text-cyan-950 mb-5 flex items-center gap-2">
           <Plus size={20} className="text-cyan-600" /> Tạo chủ đề mới
         </h3>
 
-        {/* tên chủ đề */}
+
         <div className="mb-5">
           <label className="block text-sm font-bold text-gray-700 mb-2">
             Tên chủ đề <span className="text-red-500">*</span>
@@ -1068,14 +1068,14 @@ export default function AdminTopicManagement() {
           />
         </div>
 
-        {/* ảnh chủ đề */}
+
         <div className="mb-6">
           <label className="block text-sm font-bold text-gray-700 mb-2">
             Ảnh chủ đề
           </label>
 
           <div className="flex gap-4 items-start">
-            {/* input */}
+
             <div className="flex-1">
                 <div>
                   <input
@@ -1099,7 +1099,7 @@ export default function AdminTopicManagement() {
               </p>
             </div>
 
-            {/* preview */}
+
             <div className="shrink-0 w-16 h-16 rounded-xl border-2 border-gray-200 bg-gray-100 flex items-center justify-center overflow-hidden">
               {newTopicImage ? (
                 <img
@@ -1143,7 +1143,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* modal đổi tên chủ đề */}
+
       <ModalWrapper isOpen={showEditTopicModal} zIndex="z-[200]">
       <h3 className="text-xl font-bold text-cyan-950 mb-4">Chỉnh sửa chủ đề</h3>
         <div className="mb-5">
@@ -1159,7 +1159,7 @@ export default function AdminTopicManagement() {
           />
         </div>
 
-        {/* ảnh chủ đề khi sửa */}
+
         <div className="mb-6">
           <label className="block text-sm font-bold text-gray-700 mb-2">
             Ảnh chủ đề
@@ -1225,7 +1225,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* modal tạo bài học */}
+
       <ModalWrapper isOpen={showCreateLessonModal} zIndex="z-[200]">
         <h3 className="text-xl font-bold text-cyan-950 mb-4">
           Tạo bài học mới
@@ -1277,7 +1277,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* modal từ vựng của chủ đề */}
+
       <ModalWrapper
         isOpen={showTopicWordsModal && activeTopic}
         zIndex="z-[100]"
@@ -1297,7 +1297,7 @@ export default function AdminTopicManagement() {
               />
             </div>
 
-            {/* lọc bài học */}
+
             <FilterDropdown
               label="Lọc bài học"
               activeCount={selectedLessonFilters.length}
@@ -1363,7 +1363,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* modal bài học của chủ đề */}
+
       <ModalWrapper
         isOpen={showTopicLessonsModal && activeTopic}
         zIndex="z-[100]"
@@ -1407,7 +1407,7 @@ export default function AdminTopicManagement() {
                 5: "C1",
                 6: "C2",
               };
-              // Tính cấp độ trung bình của các từ trong bài
+              
               const lessonWords = allWords.filter(
                 (w) => w.lessonId === lesson.id,
               );
@@ -1475,7 +1475,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* modal từ vựng của bài học */}
+
       <ModalWrapper
         isOpen={showLessonWordsModal && activeLesson}
         zIndex="z-[150]"
@@ -1508,7 +1508,7 @@ export default function AdminTopicManagement() {
               />
             </div>
 
-            {/* import CSV */}
+
             <button
               onClick={() => lessonCsvFileRef.current?.click()}
               className="px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold rounded-xl hover:bg-emerald-100 text-sm flex items-center gap-2 transition-colors"
@@ -1543,7 +1543,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* modal di chuyển từ vựng */}
+
       <ModalWrapper isOpen={showMoveWordModal} zIndex="z-[200]">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold text-cyan-950 flex items-center gap-2">
@@ -1562,7 +1562,7 @@ export default function AdminTopicManagement() {
         </div>
 
         <div className="space-y-4 mb-8">
-          {/* chế độ full: chọn cả chủ đề lẫn bài học */}
+
           {moveMode === "full" && (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -1577,7 +1577,7 @@ export default function AdminTopicManagement() {
                 className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none font-medium"
               >
                 <option value="">-- Chọn Chủ đề --</option>
-                {/* chỉ hiện các chủ đỀ khác với chủ đỀ hiện tại */}
+
                 {topics
                   .filter((t) => t.id !== activeTopic?.id)
                   .map((t) => (
@@ -1589,7 +1589,7 @@ export default function AdminTopicManagement() {
             </div>
           )}
 
-          {/* chọn bài học đích */}
+
           {(moveMode === "full" ? moveTargetTopicId : true) && (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -1638,7 +1638,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* xác nhận xóa */}
+
       <ConfirmModal
         isOpen={showConfirmDeleteTopic}
         onClose={() => setShowConfirmDeleteTopic(false)}
@@ -1659,7 +1659,7 @@ export default function AdminTopicManagement() {
         isDanger={true}
       />
 
-      {/* modal chỉnh sửa từ vựng */}
+
       <ModalWrapper
         isOpen={showEditWordModal}
         zIndex="z-[200]"
@@ -1827,7 +1827,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* modal chỉnh sửa bài học */}
+
       <ModalWrapper isOpen={showEditLessonModal} zIndex="z-[200]">
         <h3 className="text-xl font-bold text-cyan-950 mb-4 flex items-center gap-2">
           <Edit2 className="text-cyan-600" /> Chỉnh sửa bài học
@@ -1879,7 +1879,7 @@ export default function AdminTopicManagement() {
         </div>
       </ModalWrapper>
 
-      {/* xác nhận xóa bài học */}
+
       <ConfirmModal
         isOpen={showConfirmDeleteLesson}
         onClose={() => setShowConfirmDeleteLesson(false)}

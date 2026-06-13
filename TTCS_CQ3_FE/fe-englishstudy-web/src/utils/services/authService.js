@@ -30,4 +30,3 @@ export async function getMe() {
 export function logout() {
   clearTokens();
 }
-

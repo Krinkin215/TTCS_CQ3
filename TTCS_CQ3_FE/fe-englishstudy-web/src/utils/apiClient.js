@@ -33,7 +33,7 @@ async function refreshAuth() {
   const data = await res.json().catch(() => null);
   if (!data) return null;
 
-  // cố gắng đọc token theo nhiều key khác nhau để tương thích backend
+  
   const nextAccessToken = data.accessToken ?? data.access_token ?? data.token ?? data.jwt;
   const nextRefreshToken = data.refreshToken ?? data.refresh_token ?? refreshToken;
 
@@ -75,15 +75,15 @@ export async function apiRequest(path, options = {}) {
     if (refreshed?.accessToken) {
       return apiRequest(path, { ...options, retryOn401: false });
     } else {
-      // Nếu refresh token thất bại, chuyển hướng về trang đăng nhập
+      
       clearTokens();
       window.location.href = '/login';
       throw new Error('Phiên đăng nhập đã hết hạn');
     }
   }
 
-  // Chỉ xử lý 401 khi retry cũng thất bại (token hết hạn thật sự)
-  // 403 = Forbidden (không có quyền) → KHÔNG logout, chỉ throw error
+  
+  
 
   if (!res.ok) {
     const errorText = await res.text().catch(() => '');
@@ -97,4 +97,3 @@ export async function apiRequest(path, options = {}) {
   if (contentType.includes('application/json')) return res.json();
   return res.text();
 }
-

@@ -1,40 +1,3 @@
-<<<<<<< HEAD
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
-
-export default App
-=======
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { getMe, logout as doLogout } from './utils/services/authService';
 import { getAccessToken } from './utils/tokenStorage';
@@ -49,10 +12,10 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 function App() {
   const getInitialPage = () => {
     const path = window.location.pathname;
-    // Luôn hiển thị trang đăng nhập khi vào / hoặc /login
+    
     if (path === '/' || path === '/login') return 'login';
     if (path === '/register') return 'register';
-    // Protected pages require a token
+    
     const token = getAccessToken();
     if (!token) return 'login';
     if (path.startsWith('/admin')) return 'admin-home';
@@ -69,13 +32,13 @@ function App() {
       try {
         const token = getAccessToken();
         if (!token) {
-          // No token → always go to login (unless on register)
+          
           if (currentPage !== 'register') setCurrentPage('login');
           return;
         }
 
-        // Nếu đang ở trang login hoặc register → KHÔNG tự redirect
-        // Chỉ validate token cho các protected pages (admin-home, user-home)
+        
+        
         if (currentPage === 'login' || currentPage === 'register') {
           return;
         }
@@ -88,12 +51,12 @@ function App() {
         const isAdmin = /ADMIN/i.test(rolesStr);
         setUserRole(isAdmin ? 'admin' : 'user');
 
-        // Nếu user thường đang ở trang admin → đẩy về trang chủ user
+        
         if (currentPage === 'admin-home' && !isAdmin) {
           setCurrentPage('user-home');
           window.history.replaceState(null, '', '/home');
         }
-        // Cho phép admin xem giao diện user bình thường, không tự động force sang admin-home.
+        
       } catch {
         doLogout();
         setCurrentPage('login');
@@ -179,4 +142,3 @@ function App() {
 }
 
 export default App;
->>>>>>> trithuan

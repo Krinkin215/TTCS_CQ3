@@ -30,7 +30,7 @@ export async function importTopicVocabularies(id, file) {
   return apiRequest(`/api/topics/${id}/vocabularies/import`, { method: 'POST', auth: true, body: form });
 }
 
-// Upload ảnh topic lên Cloudinary (giống uploadMyAvatar)
+
 export async function uploadTopicImage(id, file) {
   const formData = new FormData();
   formData.append('file', file);

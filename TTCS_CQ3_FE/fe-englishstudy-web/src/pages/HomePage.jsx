@@ -111,7 +111,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
 
   const [topicWordSearchTerm, setTopicWordSearchTerm] = useState("");
 
-  // modal chọn bài học
+  
   const [showLearningModal, setShowLearningModal] = useState(false);
   const [activeLearningTopic, setActiveLearningTopic] = useState(null);
   const [learningSearchTerm, setLearningSearchTerm] = useState("");
@@ -121,13 +121,13 @@ function HomePage({ onLogout, onNavigateToPractice }) {
   const [activeFlashcardSession, setActiveFlashcardSession] = useState(null);
 
   const handleOpenLearning = async (topic) => {
-    // Mở modal ngay để UX mượt, dữ liệu load bất đồng bộ sau
+    
     setActiveLearningTopic(topic);
     setLearningSearchTerm("");
     setLearningDifficultyFilter("all");
     setShowLearningModal(true);
 
-    // Fetch wordCount và masteredCount song song cho tất cả bài học
+    
     try {
       const lessonIds = (topic.lessons ?? []).map((l) => l.id);
       if (lessonIds.length === 0) return;
@@ -158,10 +158,10 @@ function HomePage({ onLogout, onNavigateToPractice }) {
 
       const updatedTopic = { ...topic, lessons: lessonsWithStats };
       setActiveLearningTopic(updatedTopic);
-      // Cập nhật cả danh sách topics để giữ đồng bộ
+      
       setTopics((prev) => prev.map((t) => (t.id === topic.id ? updatedTopic : t)));
     } catch {
-      // nếu lỗi, modal vẫn mở với dữ liệu cũ
+      
     }
   };
 
@@ -260,7 +260,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
         if (cancelled || !principal) return;
         setUserData(mapPrincipalToUserData(principal));
       } catch {
-        // ignore — state rỗng, UI sẽ hiển thị trạng thái trống
+        
       }
     };
     run();
@@ -333,7 +333,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
 
         setTopics(mappedTopics);
       } catch {
-        // ignore — nếu API không trả dữ liệu, topics vẫn giữ giá trị hiện tại
+        
       }
     };
 
@@ -343,7 +343,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
     };
   }, []);
 
-  // Load collections riêng biệt để đảm bảo luôn có dữ liệu cho AddToCollectionModal
+  
   useEffect(() => {
     let cancelled = false;
     const loadCollections = async () => {
@@ -362,7 +362,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
           );
         }
       } catch {
-        // ignore
+        
       }
     };
     loadCollections();
@@ -380,7 +380,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
     learningCount: 0,
   });
 
-  // Load danh sách yêu thích
+  
   const refreshFavoriteCount = useCallback(async () => {
     try {
       const data = await fetchFavorites();
@@ -393,7 +393,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
         );
       }
     } catch {
-      // ignore
+      
     }
   }, []);
 
@@ -411,7 +411,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
           );
         }
       } catch {
-        // ignore
+        
       }
     };
     run();
@@ -420,14 +420,14 @@ function HomePage({ onLogout, onNavigateToPractice }) {
     };
   }, []);
 
-  // Re-sync số từ yêu thích khi quay về Trang chủ
+  
   useEffect(() => {
     if (activeMenu === "Trang chủ") {
       refreshFavoriteCount();
     }
   }, [activeMenu, refreshFavoriteCount]);
 
-  // Load thống kê từ vựng
+  
   useEffect(() => {
     let cancelled = false;
     const run = async () => {
@@ -447,7 +447,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
           });
         }
       } catch {
-        // ignore
+        
       }
     };
     run();
@@ -492,7 +492,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
         })),
       );
     } catch {
-      // ignore — modal vẫn mở nhưng sẽ hiện danh sách trống
+      
     }
   };
 
@@ -636,7 +636,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
   const streakNumberClass = streakDigits >= 3 ? "text-5xl" : "text-6xl";
   const streakUnitClass = streakDigits >= 3 ? "text-2xl ml-2" : "text-3xl ml-3";
 
-  // cột action cho bảng từ vựng trong modal chủ đề — dùng Portal để dropdown không bị overflow clip
+  
   const TopicWordActionColumn = ({ item }) => {
     const [openMenuId, setOpenMenuId] = useState(null);
     const isFav = favoriteVocabDB.includes(item.id);
@@ -719,7 +719,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans text-gray-800">
-      {/* sidebar */}
+
       <aside
         className={`${isSidebarOpen ? "w-64" : "w-20"} bg-[#083344] text-white transition-all duration-300 flex flex-col relative shadow-xl z-20`}
       >
@@ -792,7 +792,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
         </div>
       </aside>
 
-      {/* nội dung chính */}
+
       <main
         ref={mainRef}
         onScroll={handleScroll}
@@ -953,7 +953,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
               </div>
             </div>
 
-            {/* truy cập nhanh */}
+
             <div className="mb-10">
               <h2 className="text-xl font-bold text-[#083344] mb-4 text-center">
                 Truy cập nhanh
@@ -1006,7 +1006,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
               </div>
             </div>
 
-            {/* danh sách chủ đề */}
+
             <div ref={topicsRef} className="pt-8">
               <h2 className="text-2xl font-bold text-[#083344] mb-6 border-b-2 border-gray-200 pb-2 inline-block">
                 Chủ đề từ vựng
@@ -1134,7 +1134,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
 
         {activeMenu === "Bảng xếp hạng" && <LeaderboardPage />}
       </main>
-      {/* hồ sơ người dùng */}
+
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
@@ -1169,7 +1169,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
                 saved?.avatarUrl ?? saved?.avatar_url ?? updatedData.avatarUrl,
             });
           } catch {
-            // fallback vẫn update local để trải nghiệm mượt
+            
             setUserData(updatedData);
           } finally {
             setIsProfileModalOpen(false);
@@ -1178,9 +1178,9 @@ function HomePage({ onLogout, onNavigateToPractice }) {
         onLogout={onLogout}
       />
 
-      {/* Modal lịch streak đã được loại bỏ theo yêu cầu mới */}
 
-      {/* modal danh sách từ của chủ đề */}
+
+
       {showTopicWordListModal && activeTopic && (
         <div className="fixed inset-0 bg-cyan-950/70 z-[100] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
           <div className="bg-white rounded-2xl p-6 shadow-2xl max-w-6xl w-full border border-gray-100 flex flex-col max-h-[90vh]">
@@ -1207,7 +1207,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
                   />
                 </div>
 
-                {/* lọc bài học */}
+
                 <div className="relative">
                   <button
                     onClick={() => setShowLessonFilter(!showLessonFilter)}
@@ -1310,7 +1310,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
         </div>
       )}
 
-      {/* modal thêm vào bộ từ */}
+
       <AddToCollectionModal
         isOpen={showAddToCollectionModal}
         onClose={() => setShowAddToCollectionModal(false)}
@@ -1319,7 +1319,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
         onConfirm={handleConfirmAddToCollections}
       />
 
-      {/* modal chọn bài học */}
+
       {showLearningModal && activeLearningTopic && (
         <div className="fixed inset-0 bg-cyan-950/70 z-[100] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
           <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full border border-gray-100 flex flex-col max-h-[85vh] animate-in zoom-in duration-200">
@@ -1419,19 +1419,19 @@ function HomePage({ onLogout, onNavigateToPractice }) {
                               {lesson.name}
                             </h4>
                             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                              {/* Badge độ khó */}
+
                               <span className="text-[11px] font-black text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md shrink-0">
                                 Độ khó: {difficultyLabels[lesson.difficulty]}
                               </span>
-                              {/* Tổng số từ */}
+
                               <span className="text-[11px] font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md shrink-0">
                                  {wordCount} từ
                               </span>
-                              {/* Đã thuộc */}
+
                               <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md shrink-0">
                                  {masteredCount} đã thuộc
                               </span>
-                              {/* Đang học */}
+
                               {learningCount > 0 && (
                                 <span className="text-[11px] font-semibold text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-md shrink-0">
                                   ⟳ {learningCount} đang học
@@ -1455,7 +1455,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
                         </button>
                       </div>
 
-                      {/* Thanh tiến độ */}
+
                       <div className="flex flex-col gap-1.5 w-full">
                         <div className="flex justify-between items-center">
                           <span className="text-[11px] text-gray-400 font-medium">Tiến độ học</span>
@@ -1502,7 +1502,7 @@ function HomePage({ onLogout, onNavigateToPractice }) {
         </div>
       )}
 
-      {/* flashcard */}
+
       {activeFlashcardSession && (
         <FlashcardLearning
           topic={activeFlashcardSession.topic}

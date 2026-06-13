@@ -14,10 +14,7 @@ export async function getLearnedVocabStats(userId) {
   });
 }
 
-/**
- * Lấy số từ theo trạng thái thực tế (NEW/LEARNING/MASTERED) trong một collection.
- * @returns {{ newCount, learningCount, masteredCount, totalCount }}
- */
+
 export async function getCollectionStatusSummary(collectionId) {
   return apiRequest(`/api/progress/summary/collection/${collectionId}`, {
     method: 'GET',
@@ -25,10 +22,7 @@ export async function getCollectionStatusSummary(collectionId) {
   });
 }
 
-/**
- * Lấy số từ theo trạng thái thực tế (NEW/LEARNING/MASTERED) trong một lesson.
- * @returns {{ newCount, learningCount, masteredCount, totalCount }}
- */
+
 export async function getLessonStatusSummary(lessonId) {
   return apiRequest(`/api/progress/summary/lesson/${lessonId}`, {
     method: 'GET',

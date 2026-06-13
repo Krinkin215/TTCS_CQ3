@@ -30,7 +30,7 @@ export default function AdminHomePage({ onLogout }) {
           fetchTopics()
         ]);
 
-        // Tổng user
+        
         if (usersRes.status === 'fulfilled') {
           const list = Array.isArray(usersRes.value) ? usersRes.value : (usersRes.value?.items ?? usersRes.value?.data ?? []);
           if (!cancelled && Array.isArray(list)) {
@@ -39,7 +39,7 @@ export default function AdminHomePage({ onLogout }) {
           }
         }
 
-        // Tổng từ vựng hệ thống
+        
         if (topicsRes.status === 'fulfilled') {
           const topicsList = Array.isArray(topicsRes.value) ? topicsRes.value : (topicsRes.value?.items ?? topicsRes.value?.data ?? []);
           if (!cancelled && Array.isArray(topicsList)) {
@@ -49,7 +49,7 @@ export default function AdminHomePage({ onLogout }) {
         }
 
       } catch (err) {
-        // Handle error silently
+        
       }
     };
     if (activeTab === 'dashboard') {
@@ -119,7 +119,7 @@ export default function AdminHomePage({ onLogout }) {
 
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans text-gray-800">
-      {/* sidebar */}
+
       <aside 
         className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-[#083344] text-white transition-all duration-300 flex flex-col relative shadow-xl z-20 sticky top-0 h-screen shrink-0`}
       >
@@ -153,10 +153,10 @@ export default function AdminHomePage({ onLogout }) {
         </div>
       </aside>
 
-      {/* khu vực nội dung chính */}
+
       <main className="flex-1 overflow-y-auto">
 
-        {/* 1. HIỂN THỊ DASHBOARD */}
+
         {activeTab === 'dashboard' && (
           <div className="p-8">
             <header className="flex justify-between items-center mb-8">
@@ -179,11 +179,11 @@ export default function AdminHomePage({ onLogout }) {
               ))}
             </div>
 
-            {/* Sơ đồ hiển thị lưu lượng học tập đã được loại bỏ theo yêu cầu mới */}
+
           </div>
         )}
 
-        {/* 2. HIỂN THỊ TRANG BẢNG XẾP HẠNG  */}
+
         {activeTab === 'leaderboard' && (
           <div className="bg-slate-50">
             <LeaderboardPage isAdmin={true} />
@@ -208,7 +208,7 @@ export default function AdminHomePage({ onLogout }) {
           </div>
         )}
 
-        {/* 3. CÁC TÍNH NĂNG CHƯA HOÀN THIỆN */}
+
         {[''].includes(activeTab) && (
           <div className="flex flex-col items-center justify-center h-[80vh] text-slate-300">
             <Library size={80} className="mb-6 opacity-40" />

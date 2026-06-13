@@ -44,17 +44,17 @@ export default function Pagination({
           const pages = [];
 
           if (totalPages <= maxVisible + 2) {
-            // Ít trang → hiển thị tất cả
+            
             for (let i = 1; i <= totalPages; i++) pages.push(i);
           } else {
-            // Luôn hiển thị trang 1
+            
             pages.push(1);
 
             const half = Math.floor(maxVisible / 2);
             let start = Math.max(2, currentPage - half);
             let end = Math.min(totalPages - 1, currentPage + half);
 
-            // Điều chỉnh nếu gần đầu hoặc cuối
+            
             if (currentPage - half <= 2) {
               end = Math.min(totalPages - 1, maxVisible);
             }
@@ -66,7 +66,7 @@ export default function Pagination({
             for (let i = start; i <= end; i++) pages.push(i);
             if (end < totalPages - 1) pages.push('right-ellipsis');
 
-            // Luôn hiển thị trang cuối
+            
             pages.push(totalPages);
           }
 

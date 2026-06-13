@@ -28,7 +28,7 @@ function VocabTable({
     setCurrentPage(1);
   }, [searchTerm, sortConfig]);
 
-  // lọc và sắp xếp từ vựng
+  
   let processedWords = words.filter(item => 
     item.word.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -47,7 +47,7 @@ function VocabTable({
     return 0;
   });
 
-  // phân trang
+  
   const totalPages = Math.ceil(processedWords.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentWords = processedWords.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -206,7 +206,7 @@ function VocabTable({
         )}
       </div>
 
-      {/* phân trang */}
+
       <Pagination 
         currentPage={currentPage}
         totalPages={totalPages}

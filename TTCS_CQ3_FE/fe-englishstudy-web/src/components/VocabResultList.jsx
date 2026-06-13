@@ -13,7 +13,7 @@ export default function VocabResultList({
 
   return (
     <div className="space-y-8">
-      {/* DANH SÁCH LÀM SAI */}
+
       <div>
         <h3 className="text-lg font-bold text-red-600 flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
           <XCircle size={20} /> Các từ làm sai (
@@ -86,7 +86,7 @@ export default function VocabResultList({
         </div>
       </div>
 
-      {/* DANH SÁCH LÀM ĐÚNG */}
+
       <div>
         <h3 className="text-lg font-bold text-green-600 flex items-center gap-2 mb-4 border-b border-gray-100 pb-2">
           <CheckCircle2 size={20} /> Các từ làm đúng (

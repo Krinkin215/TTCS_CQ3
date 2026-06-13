@@ -69,11 +69,11 @@ function VocabularyPage({ initialFilter }) {
   const [favoriteVocabDB, setFavoriteVocabDB] = useState([]);
   const [collections, setCollections] = useState([]);
   const [topicsList, setTopicsList] = useState([]);
-  // Cache vocab IDs của từng collection: { [collectionId]: Set<vocabId> }
+  
   const [collectionVocabMap, setCollectionVocabMap] = useState({});
   const [isLoadingCollectionVocabs, setIsLoadingCollectionVocabs] = useState(false);
 
-  // modal thêm từ mới
+  
   const [showAddWordModal, setShowAddWordModal] = useState(false);
   const [addWordTab, setAddWordTab] = useState("manual");
   const [showImportDropdown, setShowImportDropdown] = useState(false);
@@ -98,7 +98,7 @@ function VocabularyPage({ initialFilter }) {
   const [pasteText, setPasteText] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
-  // bộ lọc
+  
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [openFilterDropdown, setOpenFilterDropdown] = useState(null);
   const [filterSearch, setFilterSearch] = useState({
@@ -145,17 +145,17 @@ function VocabularyPage({ initialFilter }) {
     let cancelled = false;
     const loadData = async () => {
       try {
-        // Lấy userId trước khi gọi API cần userId
+        
         let userId = null;
         try {
           const principal = await getMe();
           const u = principal?.user || principal;
           userId = u?.userId ?? u?.user_id ?? u?.id ?? null;
         } catch {
-          /* ignore */
+          
         }
 
-        // Load từ vựng user tạo + collections + topics + lessons + favorites song song
+        
         const apiCalls = [
           fetchUserVocabularies(),
           fetchCollections(),
@@ -167,7 +167,7 @@ function VocabularyPage({ initialFilter }) {
         const [vocabRes, collRes, topicsRes, lessonsRes, favRes, statsRes] =
           await Promise.allSettled(apiCalls);
 
-        // Từ vựng do user tạo
+        
         const userVocabList =
           vocabRes.status === "fulfilled"
             ? Array.isArray(vocabRes.value)
@@ -175,7 +175,7 @@ function VocabularyPage({ initialFilter }) {
               : (vocabRes.value?.items ?? vocabRes.value?.data ?? [])
             : [];
 
-        // Từ vựng do admin thêm vào topics/lessons
+        
         const topicsList =
           topicsRes.status === "fulfilled"
             ? Array.isArray(topicsRes.value)
@@ -183,7 +183,7 @@ function VocabularyPage({ initialFilter }) {
               : (topicsRes.value?.items ?? topicsRes.value?.data ?? [])
             : [];
 
-        // Lessons list để map lessonId -> topicId
+        
         const lessonsList =
           lessonsRes.status === "fulfilled"
             ? Array.isArray(lessonsRes.value)
@@ -195,7 +195,7 @@ function VocabularyPage({ initialFilter }) {
           topicsList.map((t) => fetchTopicVocabularies(t.topicId ?? t.id)),
         );
 
-        // Admin vocabularies with topicId added and isUserCreated flag
+        
         const adminVocabList = [];
         topicsList.forEach((t, idx) => {
           const res = topicVocabResults[idx];
@@ -203,14 +203,14 @@ function VocabularyPage({ initialFilter }) {
             const tid = t.topicId ?? t.id;
             res.value.forEach((v) => {
               v.topicId = tid;
-              v._isUserCreated = false; // Mark as system word
+              v._isUserCreated = false; 
             });
             adminVocabList.push(...res.value);
           }
         });
 
-        // Mark user vocab as user-created ONLY if it doesn't belong to any system topic/lesson
-        // (system words returned in user list should not be considered user-created)
+        
+        
         userVocabList.forEach((v) => {
           const hasTopic = v.topicId != null || v.topic_id != null;
           const hasLesson =
@@ -218,8 +218,8 @@ function VocabularyPage({ initialFilter }) {
           v._isUserCreated = !hasTopic && !hasLesson;
         });
 
-        // Merge user vocab + admin vocab, deduplicate by vocabId
-        // User vocab takes precedence over admin vocab
+        
+        
         const seen = new Set();
         const allVocabList = [];
         for (const w of [...userVocabList, ...adminVocabList]) {
@@ -230,7 +230,7 @@ function VocabularyPage({ initialFilter }) {
           }
         }
 
-        // Map trạng thái từ thống kê tiến độ
+        
         const statusMap = {};
         if (statsRes?.status === "fulfilled" && statsRes.value) {
           const statsData = statsRes.value;
@@ -250,7 +250,7 @@ function VocabularyPage({ initialFilter }) {
           MASTERED: "Đã thuộc",
         };
         const LEVEL_MAP = { A1: 1, A2: 2, B1: 3, B2: 4, C1: 5, C2: 6 };
-        // Danh sách yêu thích
+        
         const favIds =
           favRes.status === "fulfilled"
             ? (Array.isArray(favRes.value)
@@ -262,16 +262,16 @@ function VocabularyPage({ initialFilter }) {
             : [];
         if (!cancelled) setFavoriteVocabDB(favIds);
 
-        // Map topicId -> topicName để hiển thị cột chủ đề
+        
         const topicNameMap = {};
         topicsList.forEach((t) => {
           topicNameMap[t.topicId ?? t.id] =
             t.topicName ?? t.name ?? t.title ?? "";
         });
 
-        // Map lessonId -> topicId để điền topic cho từ có lesson nhưng thiếu topic
+        
         const lessonTopicMap = {};
-        // Ưu tiên dùng lessonsList nếu có, nếu không thì dùng t.lessons trong topics
+        
         if (lessonsList.length > 0) {
           lessonsList.forEach((l) => {
             const lid = l.lessonId ?? l.id ?? l.lesson_id;
@@ -279,7 +279,7 @@ function VocabularyPage({ initialFilter }) {
             if (lid != null && tid != null) lessonTopicMap[String(lid)] = tid;
           });
         } else {
-          // Fallback: dùng lessons trong từng topic
+          
           topicsList.forEach((t) => {
             const tid = t.topicId ?? t.id;
             const lessons = Array.isArray(t.lessons)
@@ -322,7 +322,7 @@ function VocabularyPage({ initialFilter }) {
         });
         if (!cancelled) setVocabularies(formattedData);
 
-        // Collections cho modal & bộ lọc
+        
         if (collRes.status === "fulfilled") {
           const collList = Array.isArray(collRes.value)
             ? collRes.value
@@ -333,7 +333,7 @@ function VocabularyPage({ initialFilter }) {
               name: c.collectionName ?? c.name ?? "",
               wordCount: c.vocabCount ?? c.wordCount ?? 0,
             }));
-            // Đảm bảo "Từ vựng của tôi" luôn hiển thị đầu tiên
+            
             const myVocabName = "Từ vựng của tôi";
             const userCreatedCount = formattedData.filter(
               (w) => w.isUserCreated,
@@ -352,7 +352,7 @@ function VocabularyPage({ initialFilter }) {
           }
         }
 
-        // Topics cho bộ lọc
+        
         if (!cancelled && Array.isArray(topicsList)) {
           setTopicsList(
             topicsList.map((t) => ({
@@ -453,7 +453,7 @@ function VocabularyPage({ initialFilter }) {
       const myVocabColl = collections.find((c) => c.name === "Từ vựng của tôi");
       const myVocabCollId = myVocabColl?.id;
       const isMatch = activeFilters.collections.some((filterId) => {
-        // Check if this is "Từ vựng của tôi" collection (id could be 0 or any number)
+        
         const isMyVocabColl =
           myVocabColl && String(filterId) === String(myVocabCollId);
         if (isMyVocabColl) return word.isUserCreated;
@@ -482,7 +482,7 @@ function VocabularyPage({ initialFilter }) {
     );
   };
 
-  // 2. Kiểm tra trước khi thoát
+  
   const handleCloseAddModal = () => {
     const hasUnsavedData =
       addWordTab === "manual"
@@ -504,7 +504,7 @@ function VocabularyPage({ initialFilter }) {
     setAddWordTab("manual");
   };
 
-  // 3. Lưu dữ liệu & Lọc trùng lặp
+  
   const handleSaveNewWords = async () => {
     let wordsToProcess = [];
     if (addWordTab === "manual") {
@@ -555,7 +555,7 @@ function VocabularyPage({ initialFilter }) {
     for (const newWord of wordsToProcess) {
       const wordTrimmed = newWord.word.trim();
 
-      // KIỂM TRA ĐỊNH DẠNG
+      
       if (!wordRegex.test(wordTrimmed)) {
         formatErrorCount++;
         continue;
@@ -568,7 +568,7 @@ function VocabularyPage({ initialFilter }) {
         continue;
       }
 
-      // KIỂM TRA TRÙNG LẶP
+      
       const exists = currentVocabs.some(
         (v) => v.word.toLowerCase() === wordTrimmed.toLowerCase(),
       );
@@ -577,7 +577,7 @@ function VocabularyPage({ initialFilter }) {
         continue;
       }
 
-      // TRA TỪ ĐIỂN THỰC TẾ
+      
       try {
         const response = await fetch(
           `https://api.dictionaryapi.dev/api/v2/entries/en/${wordTrimmed}`,
@@ -590,7 +590,7 @@ function VocabularyPage({ initialFilter }) {
         console.warn("Lỗi kết nối API từ điển, tạm bỏ qua check ngữ nghĩa.");
       }
 
-      // PASS TOÀN BỘ -> LƯU VỀ BACKEND
+      
       try {
         const INT_TO_LEVEL = {
           1: "A1",
@@ -625,7 +625,7 @@ function VocabularyPage({ initialFilter }) {
     setVocabularies(currentVocabs);
     setIsSaving(false);
 
-    // TỔNG HỢP BÁO CÁO CHO NGƯỜI DÙNG
+    
     if (
       addedCount > 0 &&
       duplicateCount + formatErrorCount + apiErrorCount === 0
@@ -647,7 +647,7 @@ function VocabularyPage({ initialFilter }) {
     if (addedCount > 0) forceCloseAddModal();
   };
 
-  // 4. chức năng Tải file mẫu & Mở file
+  
   const handleDownloadTemplate = async () => {
     try {
       const blob = await downloadVocabImportTemplate();
@@ -690,7 +690,7 @@ function VocabularyPage({ initialFilter }) {
       }
 
       if (successCount > 0) {
-        // Reload danh sách từ vựng của user
+        
         try {
           const freshVocabs = await fetchUserVocabularies();
           const newItems = Array.isArray(freshVocabs)
@@ -723,7 +723,7 @@ function VocabularyPage({ initialFilter }) {
             return [...brand, ...prev];
           });
         } catch {
-          // Reload lỗi nhẹ - không ảnh hưởng UX
+          
         }
       }
     } catch (err) {
@@ -751,7 +751,7 @@ function VocabularyPage({ initialFilter }) {
     }
   };
 
-  // Modal Thêm vào bộ từ — ẩn "Từ vựng của tôi" vì từ user tạo đã tự hiển thị ở đó
+  
   const modalFilteredCollections = collections.filter((c) =>
     c.name !== "Từ vựng của tôi" &&
     c.name.toLowerCase().includes(modalSearchTerm.toLowerCase()),
@@ -763,7 +763,7 @@ function VocabularyPage({ initialFilter }) {
     setModalSearchTerm("");
     setShowAddToCollectionModal(true);
 
-    // Fetch vocab của các collection chưa có trong cache
+    
     const collectionsToFetch = collections.filter(
       (c) => c.name !== "Từ vựng của tôi" && !(c.id in collectionVocabMap)
     );
@@ -790,7 +790,7 @@ function VocabularyPage({ initialFilter }) {
         return next;
       });
     } catch {
-      // ignore
+      
     } finally {
       setIsLoadingCollectionVocabs(false);
     }
@@ -830,7 +830,7 @@ function VocabularyPage({ initialFilter }) {
       }
     }
 
-    // Cập nhật cache: thêm vocabId vào các collection đã thêm thành công
+    
     if (successIds.length > 0 && wordToAdd?.id) {
       setCollectionVocabMap((prev) => {
         const next = { ...prev };
@@ -853,7 +853,7 @@ function VocabularyPage({ initialFilter }) {
     setShowAddToCollectionModal(false);
   };
 
-  // Cột Hành động của trang Từ Vựng
+  
   const VocabularyActionColumn = ({ item }) => {
     const isFav = favoriteVocabDB.includes(item.id);
 
@@ -998,7 +998,7 @@ function VocabularyPage({ initialFilter }) {
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      {/* thanh công cụ */}
+
       <div className="bg-white rounded-[1.25rem] shadow-sm border border-gray-200 p-4 mb-6 flex justify-between items-center transition-all">
         <div className="flex gap-4 items-center w-full max-w-xl">
           <SearchBar
@@ -1034,7 +1034,7 @@ function VocabularyPage({ initialFilter }) {
                       ? activeFilters.statuses.filter((s) => s !== status)
                       : [...activeFilters.statuses, status];
 
-                    // Khi chọn "Đã học" → tự động chọn "Đã thuộc" + "Chưa thuộc"
+                    
                     if (
                       status === "Đã học" &&
                       !activeFilters.statuses.includes("Đã học")
@@ -1044,7 +1044,7 @@ function VocabularyPage({ initialFilter }) {
                       if (!newStatuses.includes("Chưa thuộc"))
                         newStatuses.push("Chưa thuộc");
                     }
-                    // Khi bỏ "Đã học" → tự động bỏ "Đã thuộc" + "Chưa thuộc"
+                    
                     if (
                       status === "Đã học" &&
                       activeFilters.statuses.includes("Đã học")
@@ -1058,11 +1058,11 @@ function VocabularyPage({ initialFilter }) {
                     const hasChuaThuoc = newStatuses.includes("Chưa thuộc");
                     const hasDaHoc = newStatuses.includes("Đã học");
 
-                    // Khi cả "Đã thuộc" + "Chưa thuộc" đều được chọn → tự động chọn "Đã học"
+                    
                     if (hasDaThuoc && hasChuaThuoc && !hasDaHoc) {
                       newStatuses.push("Đã học");
                     }
-                    // Khi bỏ 1 trong "Đã thuộc"/"Chưa thuộc" mà "Đã học" đang bật → tự động bỏ "Đã học"
+                    
                     if (
                       hasDaHoc &&
                       (!hasDaThuoc || !hasChuaThuoc) &&
@@ -1258,7 +1258,7 @@ function VocabularyPage({ initialFilter }) {
         showLessonColumn={true}
       />
 
-      {/* modal thêm vào bộ từ */}
+
       <AddToCollectionModal
         isOpen={showAddToCollectionModal}
         onClose={() => setShowAddToCollectionModal(false)}
@@ -1269,7 +1269,7 @@ function VocabularyPage({ initialFilter }) {
         onConfirm={handleConfirmAddToCollections}
       />
 
-      {/* modal thêm từ vựng */}
+
       {showAddWordModal && (
         <div className="fixed inset-0 bg-cyan-950/70 z-[100] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
           <div className="bg-white rounded-[1.5rem] shadow-2xl w-full max-w-6xl flex flex-col max-h-[90vh] animate-in zoom-in duration-200 border border-gray-100 relative overflow-hidden">
@@ -1328,29 +1328,14 @@ function VocabularyPage({ initialFilter }) {
                   <HelpCircle size={18} className="text-cyan-600" /> Hướng dẫn
                 </button>
 
-                {/* <div className="w-px h-6 bg-gray-200 mx-1"></div> */}
 
-                {/* <button
-                  onClick={() =>
-                    setAddWordTab(addWordTab === "manual" ? "paste" : "manual")
-                  }
-                  className={`flex items-center gap-2 px-4 py-2 border text-sm font-bold rounded-lg transition-colors shadow-sm ${addWordTab === "paste" ? "bg-cyan-100 border-cyan-300 text-cyan-800" : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"}`}
-                >
-                  <Zap
-                    size={18}
-                    className={
-                      addWordTab === "paste"
-                        ? "text-orange-500 fill-orange-500"
-                        : "text-orange-400"
-                    }
-                  />{" "}
-                  Thêm nhanh (Paste)
-                </button> */}
+
+
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto bg-gray-50/50 p-6">
-              {/* tab nhập thủ công */}
+
               {addWordTab === "manual" && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                   <table className="w-full text-left border-collapse">
@@ -1520,7 +1505,7 @@ function VocabularyPage({ initialFilter }) {
                 </div>
               )}
 
-              {/* tab paste nhanh */}
+
               {addWordTab === "paste" && (
                 <div className="flex flex-col h-full animate-in fade-in duration-300">
                   <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-4 flex gap-3">
@@ -1585,7 +1570,7 @@ function VocabularyPage({ initialFilter }) {
         </div>
       )}
 
-      {/* hướng dẫn nhập file */}
+
       {showGuideModal && (
         <div className="fixed inset-0 bg-cyan-950/70 z-[110] flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl animate-in zoom-in duration-200 overflow-hidden">

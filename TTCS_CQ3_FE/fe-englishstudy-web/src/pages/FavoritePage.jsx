@@ -17,7 +17,7 @@ function FavoritePage({ onFavoriteChange }) {
   const [favorites, setFavorites] = useState([]);
   const [collections, setCollections] = useState([]);
 
-  // Cache vocab IDs của từng collection: { [collectionId]: Set<vocabId> }
+  
   const [collectionVocabMap, setCollectionVocabMap] = useState({});
   const [isLoadingCollectionVocabs, setIsLoadingCollectionVocabs] = useState(false);
 
@@ -56,7 +56,7 @@ function FavoritePage({ onFavoriteChange }) {
             ? collData.value
             : (collData.value?.items ?? collData.value?.data ?? []);
           if (!cancelled && Array.isArray(list)) {
-            // Lọc bỏ "Từ vựng của tôi" — không cho thêm vào bộ này từ đây
+            
             setCollections(
               list
                 .map((c) => ({
@@ -69,7 +69,7 @@ function FavoritePage({ onFavoriteChange }) {
           }
         }
       } catch {
-        // API lỗi, giữ mảng rỗng
+        
       }
     };
     loadData();
@@ -78,18 +78,18 @@ function FavoritePage({ onFavoriteChange }) {
 
   const [searchTerm, setSearchTerm] = useState('');
 
-  // modal thêm vào bộ từ
+  
   const [showAddToCollectionModal, setShowAddToCollectionModal] = useState(false);
   const [wordToAdd, setWordToAdd] = useState(null);
 
-  // Danh sách collections lọc theo search (đã bỏ "Từ vựng của tôi" ở trên)
+  
   const modalCollections = collections;
 
   const handleOpenAddToCollectionModal = async (word) => {
     setWordToAdd(word);
     setShowAddToCollectionModal(true);
 
-    // Fetch vocab của các collection chưa có trong cache
+    
     const collectionsToFetch = collections.filter((c) => !(c.id in collectionVocabMap));
     if (collectionsToFetch.length === 0) return;
 
@@ -114,7 +114,7 @@ function FavoritePage({ onFavoriteChange }) {
         return next;
       });
     } catch {
-      // ignore
+      
     } finally {
       setIsLoadingCollectionVocabs(false);
     }
@@ -135,7 +135,7 @@ function FavoritePage({ onFavoriteChange }) {
       }
     }
 
-    // Cập nhật cache sau khi thêm thành công
+    
     if (successIds.length > 0 && wordToAdd?.id) {
       setCollectionVocabMap((prev) => {
         const next = { ...prev };
@@ -248,7 +248,7 @@ function FavoritePage({ onFavoriteChange }) {
         ActionColumn={FavoriteActionColumn}
       />
 
-      {/* modal thêm vào bộ từ */}
+
       <AddToCollectionModal
         isOpen={showAddToCollectionModal}
         onClose={() => setShowAddToCollectionModal(false)}

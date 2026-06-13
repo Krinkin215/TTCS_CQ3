@@ -23,4 +23,3 @@ export async function deleteLesson(id) {
 export async function fetchLessonVocabularies(id) {
   return apiRequest(`/api/lessons/${id}/vocabularies`, { method: 'GET', auth: true });
 }
-

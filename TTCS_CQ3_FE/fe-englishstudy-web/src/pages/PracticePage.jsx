@@ -104,25 +104,25 @@ export default function PracticePage({
       const hasMastered = updated.includes("MASTERED");
       const hasLearning = updated.includes("LEARNING");
 
-      // Khi chọn "Đã học" → tự động chọn "Đã thuộc" + "Chưa thuộc"
+      
       if (hasLearned && !prev.includes("LEARNED")) {
         if (!updated.includes("MASTERED")) updated = [...updated, "MASTERED"];
         if (!updated.includes("LEARNING")) updated = [...updated, "LEARNING"];
       }
 
-      // Khi bỏ "Đã học" → tự động bỏ "Đã thuộc" + "Chưa thuộc"
+      
       if (!hasLearned && prev.includes("LEARNED")) {
         updated = updated.filter((s) => s !== "MASTERED" && s !== "LEARNING");
       }
 
-      // Khi cả "Đã thuộc" + "Chưa thuộc" đều được chọn → tự động chọn "Đã học"
+      
       const hasMasteredNow = updated.includes("MASTERED");
       const hasLearningNow = updated.includes("LEARNING");
       if (hasMasteredNow && hasLearningNow && !updated.includes("LEARNED")) {
         updated = [...updated, "LEARNED"];
       }
 
-      // Khi bỏ 1 trong "Đã thuộc"/"Chưa thuộc" mà "Đã học" đang bật → tự động bỏ "Đã học"
+      
       if (updated.includes("LEARNED") && (!hasMasteredNow || !hasLearningNow)) {
         updated = updated.filter((s) => s !== "LEARNED");
       }
@@ -134,8 +134,8 @@ export default function PracticePage({
   const [collections, setCollections] = useState([]);
   const [topics, setTopics] = useState([]);
 
-  // Status summary thực tế từ backend (thay thế ước tính)
-  const [statusSummary, setStatusSummary] = useState(null); // { newCount, learningCount, masteredCount, totalCount }
+  
+  const [statusSummary, setStatusSummary] = useState(null); 
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
 
   const [smartReviewWords, setSmartReviewWords] = useState([]);
@@ -171,7 +171,7 @@ export default function PracticePage({
   const [matchedIds, setMatchedIds] = useState([]);
   const [matchFeedback, setMatchFeedback] = useState(null);
   const [matchErrors, setMatchErrors] = useState({});
-  const [errorFlash, setErrorFlash] = useState([]); // [{id, type}] flash đỏ khi nối sai
+  const [errorFlash, setErrorFlash] = useState([]); 
 
   const [listenInput, setListenInput] = useState("");
   const [hintsUsed, setHintsUsed] = useState(0);
@@ -221,7 +221,7 @@ export default function PracticePage({
     try {
       localStorage.setItem(storageKey, JSON.stringify(gameHistory));
     } catch {
-      // Ignore storage failures in private mode or quota limits
+      
     }
   }, [currentUserId, gameHistory, isHistoryLoaded]);
   const gameStartedAtRef = useRef(performance.now());
@@ -312,7 +312,7 @@ export default function PracticePage({
               : (lessonsRes.value?.items ?? lessonsRes.value?.data ?? [])
             : [];
 
-        // Collections cho chế độ "Bộ từ vựng"
+        
         if (collRes.status === "fulfilled") {
           const collList = Array.isArray(collRes.value)
             ? collRes.value
@@ -323,7 +323,7 @@ export default function PracticePage({
               name: c.collectionName ?? c.name ?? "",
               wordCount: c.vocabCount ?? c.wordCount ?? 0,
             }));
-            // Đảm bảo "Từ vựng của tôi" luôn hiển thị đầu tiên
+            
             const myVocabName = "Từ vựng của tôi";
             const myIdx = mapped.findIndex((c) => c.name === myVocabName);
             if (myIdx !== -1) {
@@ -361,7 +361,7 @@ export default function PracticePage({
                   name:
                     l.name ?? l.title ?? l.lessonName ?? l.lesson?.name ?? "",
                   difficulty: l.difficulty ?? l.level ?? 1,
-                  // Normalize wordCount từ nhiều tên field khác nhau của backend
+                  
                   wordCount:
                     l.wordCount ??
                     l.vocabCount ??
@@ -403,7 +403,7 @@ export default function PracticePage({
           numericUserId,
           SMART_REVIEW_FETCH_LIMIT,
         );
-        //console.log("SMART REVIEW RESPONSE", res);
+        
 
         const list = Array.isArray(res) ? res : (res?.items ?? res?.data ?? []);
         if (!cancelled && Array.isArray(list)) {
@@ -411,8 +411,8 @@ export default function PracticePage({
           setSelectedSmartWordIds([]);
           setSmartReviewPage(1);
 
-          // Nếu backend trả về một từ → nghĩa là pForget của nó đã vượt 0.5 trở lại.
-          // Tự động bỏ ẩn những từ đó khỏi hiddenSmartWordIds để chúng hiển thị lại.
+          
+          
           const returnedIds = new Set(
             list.map((w) => w.vocabId ?? w.id).filter(Boolean),
           );
@@ -425,7 +425,7 @@ export default function PracticePage({
                   JSON.stringify(next),
                 );
               } catch {
-                /* ignore */
+                
               }
             }
             return next;
@@ -474,7 +474,7 @@ export default function PracticePage({
     const reviewableWords = smartReviewWords.filter((word) => {
       const pForget = getPForgetValue(word);
       const wordId = getSmartWordId(word);
-      // Smart review chỉ hiển thị các từ có xác suất quên trên 50%.
+      
       return (
         pForget !== null &&
         pForget > MIN_SMART_P_FORGET &&
@@ -498,7 +498,7 @@ export default function PracticePage({
 
   const smartGameWords = useMemo(() => {
     if (selectedSmartWords.length > 0) return selectedSmartWords;
-    // Khi người dùng không tick từ nào, mặc định lấy 10 từ có xác suất quên cao nhất.
+    
     return sortedSmartReviewWords.slice(0, 10);
   }, [selectedSmartWords, sortedSmartReviewWords]);
 
@@ -509,7 +509,7 @@ export default function PracticePage({
 
   const paginatedSmartReviewWords = useMemo(() => {
     const startIndex = (smartReviewPage - 1) * SMART_WORDS_PER_PAGE;
-    // Bảng smart review dùng phân trang 10 từ/trang giống Trang từ vựng.
+    
     return sortedSmartReviewWords.slice(
       startIndex,
       startIndex + SMART_WORDS_PER_PAGE,
@@ -566,11 +566,11 @@ export default function PracticePage({
     }
   };
 
-  // Fetch status summary thực tế từ backend khi user chọn collection hoặc lesson
+  
   useEffect(() => {
     let cancelled = false;
     const fetchSummary = async () => {
-      // Reset khi chọn lại
+      
       setStatusSummary(null);
 
       if (activeMode === "collection" && selectedCollections.length === 1) {
@@ -579,7 +579,7 @@ export default function PracticePage({
           const data = await getCollectionStatusSummary(selectedCollections[0]);
           if (!cancelled) setStatusSummary(data);
         } catch {
-          /* ignore */
+          
         } finally {
           if (!cancelled) setIsSummaryLoading(false);
         }
@@ -589,7 +589,7 @@ export default function PracticePage({
           const data = await getLessonStatusSummary(selectedLessons[0]);
           if (!cancelled) setStatusSummary(data);
         } catch {
-          /* ignore */
+          
         } finally {
           if (!cancelled) setIsSummaryLoading(false);
         }
@@ -602,11 +602,11 @@ export default function PracticePage({
   }, [activeMode, selectedCollections, selectedLessons]);
 
   const availableCount = useMemo(() => {
-    // Ưu tiên dùng summary thực tế từ backend (khi chọn đúng 1 collection/lesson)
+    
     if (statusSummary) {
       const total = statusSummary.totalCount ?? 0;
       if (selectedStatuses.length === 0) return total;
-      // Lọc theo các status được chọn
+      
       let count = 0;
       if (selectedStatuses.includes("NEW"))
         count += statusSummary.newCount ?? 0;
@@ -617,7 +617,7 @@ export default function PracticePage({
       return count;
     }
 
-    // Fallback: dùng wordCount từ metadata (khi chọn nhiều collections/lessons)
+    
     let total = 0;
     if (activeMode === "collection") {
       total = collections
@@ -686,12 +686,12 @@ export default function PracticePage({
     return () => clearInterval(timer);
   }, [activeGame, quizState, selectedAns, matchFeedback, timeLeft]);
 
-  // const getDynamicPoints = (baseModifier) => {
-  //   const timeBonus = (30 - gameSettings.timePerQuestion) * 0.5;
-  //   const diffBonus = avgDifficulty * 2;
-  //   const rawScore = baseModifier * (10 + diffBonus + timeBonus);
-  //   return Math.round(rawScore);
-  // };
+  
+  
+  
+  
+  
+  
 
   const handleAnswer = (index) => {
     if (selectedAns !== null) return;
@@ -700,15 +700,15 @@ export default function PracticePage({
     const isCorrect = index === currentQ.correct;
     const responseTime = getElapsedSeconds();
 
-    // console.log(
-    //   `[QUIZ] Câu ${currentQIndex + 1} - ${currentQ.word}: ${responseTime}s`,
-    // );
+    
+    
+    
     let points = 0;
     if (isCorrect) {
       if (currentQ.status === "NEW") points = 10;
       else if (currentQ.status === "LEARNING") points = 5;
       else if (currentQ.status === "MASTERED") points = 3;
-      else points = 5; // fallback
+      else points = 5; 
     }
 
     setQuizLog((prev) => [
@@ -763,14 +763,14 @@ export default function PracticePage({
     }
   };
 
-  // KIỂM TRA ĐIỀU KIỆN TRƯỚC KHI VÀO GAME
+  
   const handleStartGame = (gameId) => {
-    // Kiểm tra bộ lọc cho chế độ "Bộ từ vựng"
+    
     if (activeMode === "collection" && selectedCollections.length === 0) {
       toast.error("Vui lòng chọn ít nhất một Bộ từ vựng để bắt đầu ôn tập!");
       return;
     }
-    // Kiểm tra bộ lọc cho chế độ "Chủ đề"
+    
     if (
       activeMode === "topic" &&
       (selectedTopics.length === 0 || selectedLessons.length === 0)
@@ -780,7 +780,7 @@ export default function PracticePage({
       );
       return;
     }
-    // Kiểm tra số lượng từ vựng sẵn sàng
+    
     if (availableCount === 0) {
       toast.error(
         "Không có từ vựng nào thỏa mãn điều kiện lọc. Vui lòng chọn lại!",
@@ -792,7 +792,7 @@ export default function PracticePage({
       (async () => {
         let preparedQuestions = [];
         try {
-          // Map frontend mode sang backend GameInitRequestDTO
+          
           const MODE_MAP = {
             topic: "TOPIC",
             collection: "COLLECTION",
@@ -861,38 +861,38 @@ export default function PracticePage({
     }
   };
 
-  // GAME NỐI TỪ
+  
   const handleMatchClick = (item) => {
     if (selectedMatch === null) {
       setSelectedMatch(item);
     } else {
       if (selectedMatch.id === item.id && selectedMatch.type !== item.type) {
-        // NỐI ĐÚNG
+        
         setMatchedIds((prev) => [...prev, item.id]);
         const currentQ = quizData.find((q) => q.id === item.id);
         setMatchFeedback(currentQ);
 
-        // Tự động hoàn thành game khi nối xong từ cuối
+        
         if (matchedIds.length + 1 === quizData.length) {
           setTimeout(() => {
             setMatchFeedback(null);
             setQuizState("result");
-          }, 3000); // Đợi 3000ms để user nhìn thấy feedback từ cuối
+          }, 3000); 
         }
 
         let points = 0;
         if (currentQ.status === "NEW") points = 10;
         else if (currentQ.status === "LEARNING") points = 5;
         else if (currentQ.status === "MASTERED") points = 3;
-        else points = 5; // fallback
+        else points = 5; 
         const originalPoints = points;
         const deduction = 0;
         const errors = matchErrors[item.id] || 0;
 
         const responseTime = getElapsedSeconds();
-        // console.log(
-        //   `[LISTEN] Câu ${currentQIndex + 1} - ${currentQ.word}: ${responseTime}s`,
-        // );
+        
+        
+        
         setQuizLog((prev) => [
           ...prev,
           {
@@ -912,7 +912,7 @@ export default function PracticePage({
       ) {
         setSelectedMatch(null);
       } else {
-        // NỐI SAI
+        
         const flashItems = [
           { id: selectedMatch.id, type: selectedMatch.type },
           { id: item.id, type: item.type },
@@ -923,7 +923,7 @@ export default function PracticePage({
         setMatchLives((prev) => prev - 1);
         setSelectedMatch(null);
 
-        // Ghi nhận số lần sai cho cả 2 từ liên quan
+        
         setMatchErrors((prev) => ({
           ...prev,
           [selectedMatch.id]: (prev[selectedMatch.id] || 0) + 1,
@@ -941,7 +941,7 @@ export default function PracticePage({
     }
   };
 
-  // GAME NGHE - VIẾT
+  
   const handleListenSubmit = (isTimeout = false) => {
     if (selectedAns !== null) return;
     const currentQ = quizData[currentQIndex];
@@ -950,9 +950,9 @@ export default function PracticePage({
       listenInput.trim().toLowerCase() === currentQ.word.toLowerCase();
     const responseTime = getElapsedSeconds();
 
-    // console.log(
-    //   `[LISTEN] Câu ${currentQIndex + 1} - ${currentQ.word}: ${responseTime}s`,
-    // );
+    
+    
+    
 
     setSelectedAns(isCorrect ? 1 : 0);
     let points = 0;
@@ -960,7 +960,7 @@ export default function PracticePage({
       if (currentQ.status === "NEW") points = 10;
       else if (currentQ.status === "LEARNING") points = 5;
       else if (currentQ.status === "MASTERED") points = 3;
-      else points = 5; // fallback
+      else points = 5; 
     }
     setQuizLog((prev) => [
       ...prev,
@@ -1003,7 +1003,7 @@ export default function PracticePage({
   };
 
   useEffect(() => {
-    // Xử lý khi Hết Mạng
+    
     if (activeGame === "match" && matchLives === 0 && quizState === "playing") {
       const timeForCurrentQ = getElapsedSeconds();
       const allFailedLogs = quizData.map((q) => ({
@@ -1125,7 +1125,7 @@ export default function PracticePage({
     onGameFinished,
   ]);
 
-  // GIAO DIỆN GAME TRẮC NGHIỆM
+  
   if (activeGame === "quiz") {
     const currentQ = quizData[currentQIndex];
     if (!currentQ && quizState === "playing") {
@@ -1373,7 +1373,7 @@ export default function PracticePage({
     );
   }
 
-  // GIAO DIỆN GAME NỐI TỪ
+  
   if (activeGame === "match") {
     if (quizData.length === 0 && quizState === "playing") {
       return (
@@ -1454,9 +1454,9 @@ export default function PracticePage({
                 </div>
               </div>
 
-              {/* Lưới nối từ: luôn hiện – cột trái là tiếng Anh, cột phải là nghĩa tiếng Việt */}
+
               <div className="grid grid-cols-2 gap-4">
-                {/* Cột trái – từ tiếng Anh (filter matched ra để các ô tự đẩy lên) */}
+
                 <div className="flex flex-col gap-4">
                   {(matchItems.left ?? [])
                     .filter((item) => !matchedIds.includes(item.id))
@@ -1486,7 +1486,7 @@ export default function PracticePage({
                     })}
                 </div>
 
-                {/* Cột phải – nghĩa tiếng Việt (filter matched ra để các ô tự đẩy lên) */}
+
                 <div className="flex flex-col gap-4">
                   {(matchItems.right ?? [])
                     .filter((item) => !matchedIds.includes(item.id))
@@ -1517,7 +1517,7 @@ export default function PracticePage({
                 </div>
               </div>
 
-              {/* Popup kết quả đúng: sticky đáy, cạnh trái/phải thẳng hàng với grid */}
+
               {matchFeedback && (
                 <div
                   ref={feedbackRef}
@@ -1675,7 +1675,7 @@ export default function PracticePage({
     );
   }
 
-  // GIAO DIỆN GAME NGHE - VIẾT
+  
   if (activeGame === "listen") {
     const currentQ = quizData[currentQIndex];
     if (!currentQ && quizState === "playing") {
@@ -1706,7 +1706,7 @@ export default function PracticePage({
         <div className="max-w-3xl mx-auto space-y-6">
           {quizState === "playing" && (
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-              {/* Header */}
+
               <div className="flex justify-between items-center mb-6">
                 <span className="text-gray-500 font-bold">
                   Câu {currentQIndex + 1} / {quizData.length}
@@ -1727,7 +1727,7 @@ export default function PracticePage({
                 ></div>
               </div>
 
-              {/* Box câu hỏi */}
+
               <div className="flex flex-col items-center mb-8 border-b border-gray-100 pb-8">
                 <div
                   className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-black mb-6 border-4 transition-colors ${timeLeft <= 5 ? "border-red-500 text-red-500" : "border-orange-500 text-orange-600"}`}
@@ -1756,7 +1756,7 @@ export default function PracticePage({
                 </div>
               </div>
 
-              {/* Box nhập liệu */}
+
               <div className="flex flex-col gap-4">
                 <input
                   type="text"
@@ -1790,7 +1790,7 @@ export default function PracticePage({
                 </div>
               </div>
 
-              {/* Feedback */}
+
               {selectedAns !== null && (
                 <div
                   ref={feedbackRef}
@@ -1864,7 +1864,7 @@ export default function PracticePage({
             </div>
           )}
 
-          {/* Result & Detail Screens */}
+
           {quizState === "result" && (
             <div className="bg-white rounded-3xl p-10 shadow-sm border border-gray-100 text-center animate-in zoom-in-95">
               <div className="w-24 h-24 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -1944,11 +1944,11 @@ export default function PracticePage({
     );
   }
 
-  // GIAO DIỆN CHÍNH
+  
   return (
     <div className="min-h-screen bg-slate-50 p-8 pb-20">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* HEADER */}
+
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-black text-cyan-950 flex items-center gap-3">
@@ -1961,7 +1961,7 @@ export default function PracticePage({
           </div>
         </div>
 
-        {/* CHỌN CHẾ ĐỘ */}
+
         <div className="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 flex gap-2">
           {[
             { id: "collection", icon: BookOpen, label: "Bộ từ vựng" },
@@ -1982,7 +1982,7 @@ export default function PracticePage({
           ))}
         </div>
 
-        {/* KHUNG BỘ LỌC */}
+
         {activeMode !== "smart" && (
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-lg font-bold text-cyan-950 mb-4">
@@ -2295,13 +2295,13 @@ export default function PracticePage({
           </div>
         )}
 
-        {/* CHỌN GAME */}
+
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
             <div className="flex items-center gap-4">
               <h2 className="text-xl font-black text-cyan-950">Chọn Game</h2>
             </div>
-            {/* Hiển thị count theo status thực tế từ backend */}
+
             {isSummaryLoading ? (
               <div className="flex items-center gap-2 text-gray-400 text-sm font-bold">
                 <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
@@ -2397,7 +2397,7 @@ export default function PracticePage({
           </div>
         </div>
 
-        {/* LỊCH SỬ CHƠI */}
+
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="flex border-b border-gray-100">
             <div className="flex-1 flex items-center justify-center gap-2 py-4 font-bold text-lg border-b-2 border-cyan-600 text-cyan-700 bg-cyan-50/30">
@@ -2478,9 +2478,9 @@ export default function PracticePage({
         </div>
       </div>
 
-      {/* Modal Cài đặt Game + icon bánh răng đã được loại bỏ theo yêu cầu mới */}
 
-      {/* HƯỚNG DẪN TRÒ CHƠI */}
+
+
       {instructionGame && (
         <div className="fixed inset-0 bg-black/60 z-[300] flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
@@ -2536,7 +2536,7 @@ export default function PracticePage({
         </div>
       )}
 
-      {/* LỊCH SỬ CHI TIẾT */}
+
       {historyLogView && (
         <div className="fixed inset-0 bg-cyan-950/60 z-[300] flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">

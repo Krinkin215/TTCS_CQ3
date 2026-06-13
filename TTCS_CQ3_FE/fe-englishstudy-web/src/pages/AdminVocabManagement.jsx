@@ -94,7 +94,7 @@ export default function AdminVocabManagement() {
           });
           setTopicsData(formattedTopics);
 
-          // Lấy vocabularies cho từng topic
+          
           const vocabPromises = formattedTopics.map((t) =>
             fetchTopicVocabularies(t.id).catch(() => []),
           );
@@ -133,7 +133,7 @@ export default function AdminVocabManagement() {
     };
   }, []);
 
-  // modal thêm từ mới
+  
   const [showAddWordModal, setShowAddWordModal] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
 
@@ -153,15 +153,15 @@ export default function AdminVocabManagement() {
   const [draftWords, setDraftWords] = useState([{ ...defaultDraftRow }]);
   const [isSaving, setIsSaving] = useState(false);
 
-  // modal chỉnh sửa
+  
   const [showEditWordModal, setShowEditWordModal] = useState(false);
   const [editingWords, setEditingWords] = useState([]);
 
-  // modal xóa
+  
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [wordToDelete, setWordToDelete] = useState(null);
 
-  // bộ lọc
+  
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [openFilterDropdown, setOpenFilterDropdown] = useState(null);
   const [filterSearch, setFilterSearch] = useState({ topics: "", lessons: "" });
@@ -170,7 +170,7 @@ export default function AdminVocabManagement() {
   const [activeFilters, setActiveFilters] = useState(initialFilters);
   const [draftFilters, setDraftFilters] = useState(initialFilters);
 
-  // menu hành động dùng chung, tránh nhiều menu mở cùng lúc
+  
   const [openMenuId, setOpenMenuId] = useState(null);
 
   const toggleDraftFilter = (category, value) => {
@@ -210,7 +210,7 @@ export default function AdminVocabManagement() {
       !activeFilters.types.includes(word.word_type)
     )
       return false;
-    // cấp độ lưu dạng chuỗi ('A1'...) nhưng word.level là số nguyên, cần chuyển đổi
+    
     if (activeFilters.levels.length > 0) {
       const levelInts = activeFilters.levels
         .map((l) => LEVEL_STR_TO_INT[l])
@@ -422,7 +422,7 @@ export default function AdminVocabManagement() {
       return;
     }
 
-    // update backend rồi update UI
+    
     let hasError = false;
     await Promise.all(
       editingWords.map(async (w) => {
@@ -477,7 +477,7 @@ export default function AdminVocabManagement() {
   const AdminActionColumn = ({ item }) => {
     return (
       <div className="relative flex justify-center">
-        {/* Overlay trong suốt: bắt click bên ngoài để đóng menu */}
+
         {openMenuId === item.id && (
           <div
             className="fixed inset-0 z-40"
@@ -520,7 +520,7 @@ export default function AdminVocabManagement() {
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      {/* thanh công cụ */}
+
       <div className="bg-white rounded-[1.25rem] shadow-sm border border-gray-200 p-4 mb-6 flex justify-between items-center transition-all">
         <div className="flex gap-4 items-center w-full max-w-xl">
           <SearchBar
@@ -746,7 +746,7 @@ export default function AdminVocabManagement() {
         showLessonColumn={true}
       />
 
-      {/* modal thêm từ vựng */}
+
       {showAddWordModal && (
         <div className="fixed inset-0 bg-cyan-950/70 z-[100] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
           <div className="bg-white rounded-[1.5rem] shadow-2xl w-full max-w-7xl flex flex-col max-h-[90vh] animate-in zoom-in duration-200 border border-gray-100 relative overflow-hidden">
@@ -1041,7 +1041,7 @@ export default function AdminVocabManagement() {
         isDanger={true}
       />
 
-      {/* modal chỉnh sửa từ vựng */}
+
       {showEditWordModal && (
         <div className="fixed inset-0 bg-cyan-950/70 z-[200] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
           <div className="bg-white rounded-[1.5rem] shadow-2xl w-full max-w-7xl flex flex-col max-h-[90vh] animate-in zoom-in duration-200 border border-gray-100 overflow-hidden">
@@ -1213,7 +1213,7 @@ export default function AdminVocabManagement() {
         </div>
       )}
 
-      {/* xác nhận xóa */}
+
       <ConfirmModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

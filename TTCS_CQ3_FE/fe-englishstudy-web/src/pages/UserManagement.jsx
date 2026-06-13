@@ -65,7 +65,7 @@ export default function UserManagement() {
           setUsers(mapped);
         }
       } catch {
-        // API lỗi, sẽ hiển thị mảng rỗng
+        
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -76,19 +76,19 @@ export default function UserManagement() {
     };
   }, []);
 
-  // Trạng thái phân trang & Sắp xếp
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState(null);
   const itemsPerPage = 10;
 
-  // Trạng thái modal
+  
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [selectedProfileUser, setSelectedProfileUser] = useState(null);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  // Lọc và sắp xếp người dùng
+  
   const processedUsers = useMemo(() => {
     let result = users;
 
@@ -102,7 +102,7 @@ export default function UserManagement() {
       );
     }
 
-    // Sắp xếp theo tên người dùng
+    
     if (sortOrder) {
       result = [...result].sort((a, b) => {
         const nameA = a.username.toLowerCase();
@@ -118,13 +118,13 @@ export default function UserManagement() {
 
   const totalPages = Math.ceil(processedUsers.length / itemsPerPage) || 1;
 
-  // Người dùng trên trang hiện tại
+  
   const paginatedUsers = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return processedUsers.slice(startIndex, startIndex + itemsPerPage);
   }, [processedUsers, currentPage]);
 
-  // Các hàm xử lý
+  
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
@@ -160,7 +160,7 @@ export default function UserManagement() {
         setSelectedProfileUser(mapped);
       }
     } catch {
-      // fallback giữ dữ liệu từ danh sách
+      
     }
   };
 
@@ -178,7 +178,7 @@ export default function UserManagement() {
         await deleteUserById(targetUser.id);
         setUsers((prev) => prev.filter((u) => u.id !== targetUser.id));
         toast.success(`Đã xóa tài khoản "${targetUser.fullName || targetUser.username}" thành công.`);
-        // Điều chỉnh phân trang nếu cần
+        
         setUsers((prev) => {
           const newTotal = prev.length;
           const newTotalPages = Math.ceil(newTotal / itemsPerPage) || 1;
@@ -202,7 +202,7 @@ export default function UserManagement() {
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          {/* Thanh tìm kiếm */}
+
           <SearchBar
             value={searchTerm}
             onChange={handleSearchChange}
@@ -212,7 +212,7 @@ export default function UserManagement() {
         </div>
       </div>
 
-      {/* Khung chứa bảng */}
+
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col">
         {isLoading && (
           <div className="px-6 py-4 text-sm font-bold text-slate-400 border-b border-slate-100">
@@ -319,7 +319,7 @@ export default function UserManagement() {
           </table>
         </div>
 
-        {/* Điều khiển phân trang */}
+
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -331,7 +331,7 @@ export default function UserManagement() {
         />
       </div>
 
-      {/* modal hồ sơ người dùng */}
+
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
@@ -351,7 +351,7 @@ export default function UserManagement() {
         isEditable={false}
       />
 
-      {/* xác nhận xóa modal */}
+
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

@@ -38,7 +38,7 @@ export default function ProfileModal({
   const [formData, setFormData] = useState({});
   const [avatarFile, setAvatarFile] = useState(null);
 
-  // change password state
+  
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
     oldPassword: "",
@@ -104,7 +104,7 @@ export default function ProfileModal({
     try {
       let finalFormData = { ...formData };
       if (avatarFile) {
-        // Show loading state if needed, or rely on a global loading
+        
         const newAvatarUrl = await uploadMyAvatar(avatarFile);
         finalFormData.avatarUrl = newAvatarUrl;
       }
@@ -324,10 +324,7 @@ export default function ProfileModal({
                   </span>
                 </span>
               </div>
-              {/* <div className="flex items-center text-gray-700">
-                <Calendar size={16} className="text-cyan-600 w-6" />
-                <span className="text-sm">Ngày tham gia: <span className="font-semibold text-gray-900 ml-1">{user.joinDate || 'Chưa cập nhật'}</span></span>
-              </div> */}
+
             </div>
 
             {isEditable && (
@@ -358,7 +355,7 @@ export default function ProfileModal({
         )}
       </div>
 
-      {/* Change Password Modal */}
+
       {isChangingPassword && (
         <div className="fixed inset-0 bg-slate-900/40 z-[1000] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-[2rem] w-full max-w-md p-6 relative shadow-2xl animate-in zoom-in-95 duration-200 text-gray-800">

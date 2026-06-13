@@ -7,18 +7,18 @@ function LoginPage({ onNavigateToRegister, onLoginSuccess }) {
   const [error, setError] = useState('');
 
   return (
-    // Phần bao ngoài
+    
     <div className="min-h-screen flex items-center justify-center bg-cyan-900">
-      {/*Phần đóng khung*/}
+
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
         
-        {/* Tiêu đề */}
+
         <div className="text-center mb-8">
           <h1 className="text-4xl font-extrabold text-cyan-950">EngLearn</h1>
           <p className="text-gray-500 mt-2">Học tiếng Anh mỗi ngày</p>
         </div>
 
-        {/* Form nhập liệu */}
+
         <form 
           className="space-y-6" 
           onSubmit={async (e) => {
@@ -81,7 +81,7 @@ function LoginPage({ onNavigateToRegister, onLoginSuccess }) {
           </p>
         )}
 
-        {/* Phần footer */}
+
         <p className="text-center text-sm text-gray-900 mt-6">
           Chưa có tài khoản? 
           <button 

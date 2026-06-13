@@ -47,4 +47,3 @@ export async function downloadVocabImportTemplate() {
   if (!res.ok) throw new Error('Template download failed');
   return res.blob();
 }
-

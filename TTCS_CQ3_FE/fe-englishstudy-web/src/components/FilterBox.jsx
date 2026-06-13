@@ -29,7 +29,7 @@ export default function FilterBox({
 
   const toggleOne = (id) => {
     if (singleSelect) {
-      // Chỉ chọn 1: nếu đã chọn thì bỏ, nếu chưa thì chọn mới
+      
       onChange(selectedIds.includes(id) ? [] : [id]);
     } else {
       onChange(

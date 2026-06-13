@@ -15,7 +15,7 @@ function LeaderboardPage({ isAdmin = false }) {
       try {
         const data = await fetchLeaderboard({ sortBy, timeFilter, limit: 200 });
         if (!cancelled && data.length > 0) {
-          // Map sang shape UI hiện tại (ngày/tất cả)
+          
           const mapped = data.map((u) => ({
             id: u.id,
             username: u.username,
@@ -45,7 +45,7 @@ function LeaderboardPage({ isAdmin = false }) {
     };
   }, [sortBy, timeFilter]);
 
-  // SẮP XẾP VÀ XẾP HẠNG
+  
   const rankedUsers = useMemo(() => {
     const base = serverUsers && serverUsers.length > 0 ? serverUsers : [];
     const sorted = [...base];
@@ -55,7 +55,7 @@ function LeaderboardPage({ isAdmin = false }) {
 
     sorted.sort((a, b) => getScore(b) - getScore(a));
 
-    // Gán hạng (Rank)
+    
     return sorted.map((user, index) => ({
       ...user,
       rank: user.rank ?? index + 1,
@@ -68,7 +68,7 @@ function LeaderboardPage({ isAdmin = false }) {
   const currentUserRankInfo = rankedUsers.find((u) => u.isCurrentUser);
   const isOutsideTop100 = currentUserRankInfo && currentUserRankInfo.rank > 100;
 
-  // Bục vinh danh (Top 3)
+  
   const PodiumCard = ({ user, position }) => {
     if (!user) return null;
 
@@ -120,7 +120,7 @@ function LeaderboardPage({ isAdmin = false }) {
           </p>
 
           <div className="mt-auto w-full flex flex-col gap-1.5 items-center border-t border-black/10 pt-2.5">
-            {/* Hiển thị Tổng Điểm */}
+
             <div className="flex items-center gap-1.5 w-full justify-center px-2 py-1 rounded-lg bg-yellow-500/15">
               <Trophy size={18} className="text-yellow-600" />
               <span className="font-black text-xl text-yellow-700">
@@ -128,7 +128,7 @@ function LeaderboardPage({ isAdmin = false }) {
               </span>
               <span className="text-xs text-yellow-600 font-bold">điểm</span>
             </div>
-            {/* Hiển thị Chuỗi (Streak) */}
+
             <div className="flex items-center gap-1.5 w-full justify-center text-orange-600 font-bold mt-1">
               <Flame size={16} className="fill-orange-500 text-orange-500" />
               <span className="text-sm">
@@ -143,9 +143,9 @@ function LeaderboardPage({ isAdmin = false }) {
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen flex flex-col">
-      {/* KHU VỰC ĐIỀU KHIỂN */}
+
       <div className="flex flex-col items-center mb-10 space-y-6">
-        {/* Tiêu đề & Bộ lọc Thời gian */}
+
         <div className="w-full flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-extrabold text-cyan-950">
@@ -183,28 +183,28 @@ function LeaderboardPage({ isAdmin = false }) {
         )}
       </div>
 
-      {/* BỤC VINH DANH */}
+
       <div className="flex justify-center items-end gap-2 mb-8 max-w-4xl mx-auto w-full pt-16 relative z-0">
         <PodiumCard user={top3[1]} position={2} />
         <PodiumCard user={top3[0]} position={1} />
         <PodiumCard user={top3[2]} position={3} />
       </div>
 
-      {/* DANH SÁCH XẾP HẠNG */}
+
       <div className="max-w-4xl mx-auto w-full bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1 max-h-[500px] relative">
-        {/* Header của Bảng */}
+
         <div className="flex items-center px-6 py-4 bg-cyan-50 border-b border-cyan-100 text-xs font-extrabold text-cyan-900 uppercase tracking-wider sticky top-0 z-30">
           <div className="w-16 text-center">Hạng</div>
           <div className="flex-1 pl-4">Người dùng</div>
 
-          {/* Cột Chuỗi (Streak) */}
+
           <div className="w-24 text-center text-orange-600">Chuỗi</div>
 
-          {/* Cột Tổng điểm */}
+
           <div className="w-32 text-center text-yellow-600">Tổng điểm</div>
         </div>
 
-        {/* Khung cuộn chứa danh sách */}
+
         <div className="overflow-y-auto flex-1 scrollbar-thin scroll-smooth relative">
           {remainingUsers.map((user) => (
             <div
@@ -241,13 +241,13 @@ function LeaderboardPage({ isAdmin = false }) {
                 </div>
               </div>
 
-              {/* Cột Chuỗi (Streak) */}
+
               <div className="w-24 flex items-center justify-center gap-1.5 text-orange-600 font-bold bg-orange-50/50 py-1 rounded-lg mr-4 border border-orange-100">
                 <Flame size={16} className="fill-orange-500 text-orange-500" />
                 <span className="text-sm">{user.streak}</span>
               </div>
 
-              {/* Cột Điểm */}
+
               <div className="w-32 text-center font-black text-base flex items-center justify-center gap-1.5 text-yellow-600 bg-yellow-50/50 py-1 rounded-lg">
                 {user._displayScore.toLocaleString()}{" "}
                 <Trophy
